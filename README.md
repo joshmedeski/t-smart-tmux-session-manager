@@ -16,12 +16,10 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 ## How to use
 
-
-
 ```
   Go to session
       t {name}
 
   Run interactive mode
-      t -i
+      t
 ```

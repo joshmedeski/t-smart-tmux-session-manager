@@ -5,11 +5,11 @@ if [ "$1" = "-h" ]; then
   echo "\033[1m  t - the smart tmux session manager\033[0m"
   echo "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager"
   echo ""
+  echo "\033[32m  Run interactive mode"
+  echo "\033[34m      t"
+  echo ""
   echo "\033[32m  Go to session"
   echo "\033[34m      t {name}"
-  echo ""
-  echo "\033[32m  Run interactive mode"
-  echo "\033[34m      t -i"
   echo ""
 elif [ $# -eq 0 ]; then
   if [ -z "$TMUX" ]; then
