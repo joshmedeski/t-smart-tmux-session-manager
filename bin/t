@@ -35,26 +35,21 @@ SESSION=${SESSION//:/}
 # if not currently in tmux
 if [ -z "$TMUX" ]; then
   # tmux is not active
-  echo "is not tmux"
   if [ -z "$SESSION" ]; then
     # session does not exist
-    echo "session does not exist"
     # jump to directory
     cd $ZOXIDE_RESULT
     # create session
     tmux new-session -s $SESSION_NAME
   else
     # session exists
-    echo "session exists"
     # attach to session
     tmux attach -t $SESSION
   fi
 else
   # tmux is active
-  echo "is tmux"
   if [ -z "$SESSION" ]; then
     # session does not exist
-    echo "session does not exist"
     # jump to directory
     cd $ZOXIDE_RESULT
     # create session
@@ -63,7 +58,6 @@ else
     tmux switch-client -t $SESSION_NAME
   else
     # session exists
-    echo "session exists"
     # attach to session
     # switch to tmux session
     tmux switch-client -t $SESSION
