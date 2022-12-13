@@ -2,7 +2,10 @@
 
 tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create tmux sessions.
 
-![smart-tmux-sessions-with-zoxide-and-fzf.jpeg](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/)
+<a href="https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/" target="_blank">
+![thumbnail](https://github.com/joshmedeski/t-smart-tmux-session-manager/blob/main/smart-tmux-sessions-with-zoxide-and-fzf.jpeg?raw=true)
+</a>
+
 
 ## Prerequisites
 
