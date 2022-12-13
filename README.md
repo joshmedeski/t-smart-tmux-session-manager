@@ -16,6 +16,8 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 ## How to install
 
+### 1. Install tpm plugin
+
 This script can be installed with the [Tmux Plugin Manager (tpm)](https://github.com/tmux-plugins/tpm).
 
 Add the following line to your `~/.tmux.conf` file:
@@ -24,12 +26,44 @@ Add the following line to your `~/.tmux.conf` file:
 set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
 ```
 
+### 2. Add to path
+
+To use the `t` script from anywhere, select your shell environment and follow the instructions.
+
+<details>
+<summary>bash</summary>
+
+Add the following line to `~/.bashrc`
+
+```fish
+export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
+```
+</details>
+
+<details>
+<summary>zsh</summary>
+
+Add the following line to `~/.zprofile`
+
+```fish
+export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
+```
+</details>
+
+<details>
+<summary>fish</summary>
+
+Add the following line to `~/.config/fish/config.fish`
+
+```fish
+fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
+```
+</details>
+
 ## How to use
 
-```
-  Go to session
-      t {name}
+By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup that display zoxide results. Type the result you want and when you hit enter it will create a tmux session and connect to it or, if the sessions already exists, switch to it.
 
-  Run interactive mode
-      t
-```
+If you are not in tmux, you can simply run `t` to start the interactive script, or call `t {name}` to jump directly to a session of your choosing.
+
+You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
