@@ -14,6 +14,16 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf)
 
+## How to install
+
+This script can be installed with the [Tmux Plugin Manager (tpm)](https://github.com/tmux-plugins/tpm).
+
+Add the following line to your `~/.tmux.conf` file:
+
+```conf
+set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
+```
+
 ## How to use
 
 ```
