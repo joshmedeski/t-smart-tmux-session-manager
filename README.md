@@ -67,3 +67,15 @@ By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup
 If you are not in tmux, you can simply run `t` to start the interactive script, or call `t {name}` to jump directly to a session of your choosing.
 
 You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
+
+## Tasks
+
+- [x] Create tpm plugin
+- [x] Merge scripts and reduce logic
+- [x] Add docs
+- [x] Add help flag with basic documentation (`t -h`)
+- [ ] Publish YouTube video on how to install it
+- [ ] Save zoxide entries selected from t script (with sqlite?)
+- [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)
+- [ ] Add Neovim Telescope support?
+- [ ] Add fzf preview support?
