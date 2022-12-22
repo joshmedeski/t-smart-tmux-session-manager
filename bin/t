@@ -13,9 +13,9 @@ if [ "$1" = "-h" ]; then
   echo ""
 elif [ $# -eq 0 ]; then
   if [ -z "$TMUX" ]; then
-    ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --header 'tmux-session')
+    ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label ' t - smart tmux session manager ')
   else
-    ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --header 'tmux-session')
+    ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label ' t - smart tmux session manager ')
   fi
 else
   ZOXIDE_RESULT=$(zoxide query $1)
