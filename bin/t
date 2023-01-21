@@ -29,7 +29,7 @@ FOLDER=$(basename $ZOXIDE_RESULT)
 SESSION_NAME=$(echo $FOLDER | tr ' ' '_' | tr '.' '_')
 
 # lookup tmux session name
-SESSION=$(tmux list-sessions | grep $SESSION_NAME | awk '{print $1}')
+SESSION=$(tmux list-sessions | grep -f $SESSION_NAME | awk '{print $1}')
 SESSION=${SESSION//:/}
 
 # if not currently in tmux
@@ -51,7 +51,7 @@ else
   if [ -z "$SESSION" ]; then
     # session does not exist
     # jump to directory
-    cd $ZOXIDE_RESULT
+    cd "$ZOXIDE_RESULT"
     # create session
     tmux new-session -d -s $SESSION_NAME
     # attach to session
