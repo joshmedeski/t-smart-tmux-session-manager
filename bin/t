@@ -1,16 +1,16 @@
 #!/bin/bash
 
 if [ "$1" = "-h" ]; then
-    echo ""
-    echo "\033[1m  t - the smart tmux session manager\033[0m"
-    echo "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager"
-    echo ""
-    echo "\033[32m  Run interactive mode"
-    echo "\033[34m      t"
-    echo ""
-    echo "\033[32m  Go to session"
-    echo "\033[34m      t {name}"
-    echo ""
+    printf ""
+    printf "\033[1m  t - the smart tmux session manager\033[0m"
+    printf "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager"
+    printf ""
+    printf "\033[32m  Run interactive mode"
+    printf "\033[34m      t"
+    printf ""
+    printf "\033[32m  Go to session"
+    printf "\033[34m      t {name}"
+    printf ""
 elif [ $# -eq 0 ]; then
     if [ "$TMUX" = "" ]; then
         ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label ' t - smart tmux session manager ')
