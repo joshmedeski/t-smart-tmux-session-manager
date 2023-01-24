@@ -39,7 +39,7 @@ if [ "$TMUX" = "" ]; then
     if [ "$SESSION" = "" ]; then
         # session does not exist
         # jump to directory
-        cd "$ZOXIDE_RESULT"
+        cd "$ZOXIDE_RESULT" || exit 1
         # create session
         tmux new-session -s "$SESSION_NAME"
     else
@@ -52,7 +52,7 @@ else
     if [ "$SESSION" = "" ]; then
         # session does not exist
         # jump to directory
-        cd "$ZOXIDE_RESULT"
+        cd "$ZOXIDE_RESULT" || exit 1
         # create session
         tmux new-session -d -s "$SESSION_NAME"
         # attach to session
