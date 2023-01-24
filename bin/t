@@ -1,4 +1,5 @@
 #!/bin/bash
+# cSpell:words elif
 
 if [ "$1" = "-h" ]; then
     printf ""
