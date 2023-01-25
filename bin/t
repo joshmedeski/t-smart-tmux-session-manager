@@ -20,10 +20,11 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
     printf "\033[34m      t --help\n"
     printf "\n"
 elif [ $# -eq 0 ]; then
+    FZF_BORDER_LABEL=" t - smart tmux session manager "
     if [ "$TMUX" = "" ]; then
-        ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label ' t - smart tmux session manager ')
+        ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label "$FZF_BORDER_LABEL")
     else
-        ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label ' t - smart tmux session manager ')
+        ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label "$FZF_BORDER_LABEL")
     fi
 else
     ZOXIDE_RESULT=$(zoxide query "$1")
