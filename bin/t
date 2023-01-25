@@ -37,38 +37,22 @@ fi
 FOLDER=$(basename "$ZOXIDE_RESULT")
 SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_')
 
-# lookup tmux session name
-SESSION=$(tmux list-sessions | grep -F "$SESSION_NAME" | awk '{print $1}')
-SESSION=${SESSION//:/}
+SESSION=$(tmux list-sessions | grep -F "$SESSION_NAME" | awk '{print $1}') # find existing session
+SESSION=${SESSION//:/} # grab session name
 
-# if not currently in tmux
-if [ "$TMUX" = "" ]; then
-    # tmux is not active
-    if [ "$SESSION" = "" ]; then
-        # session does not exist
-        # jump to directory
-        cd "$ZOXIDE_RESULT" || exit 1
-        # create session
-        tmux new-session -s "$SESSION_NAME"
-    else
-        # session exists
-        # attach to session
-        tmux attach -t "$SESSION"
+if [ "$TMUX" = "" ]; then # if not currently in tmux
+    if [ "$SESSION" = "" ]; then # session does not exist
+        cd "$ZOXIDE_RESULT" || exit 1 # jump to directory
+        tmux new-session -s "$SESSION_NAME" # create session and attach
+    else # session exists
+        tmux attach -t "$SESSION" # attach to session
     fi
-else
-    # tmux is active
-    if [ "$SESSION" = "" ]; then
-        # session does not exist
-        # jump to directory
-        cd "$ZOXIDE_RESULT" || exit 1
-        # create session
-        tmux new-session -d -s "$SESSION_NAME"
-        # attach to session
-        tmux switch-client -t "$SESSION_NAME"
-    else
-        # session exists
-        # attach to session
-        # switch to tmux session
-        tmux switch-client -t "$SESSION"
+else # currently in tmux
+    if [ "$SESSION" = "" ]; then # session does not exist
+        cd "$ZOXIDE_RESULT" || exit 1 # jump to directory
+        tmux new-session -d -s "$SESSION_NAME" # create session
+        tmux switch-client -t "$SESSION_NAME" # attach to session
+    else # session exists
+        tmux switch-client -t "$SESSION" # switch to session
     fi
 fi
