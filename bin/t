@@ -38,7 +38,7 @@ if [ -z "$TMUX" ]; then
   if [ -z "$SESSION" ]; then
     # session does not exist
     # jump to directory
-    cd $ZOXIDE_RESULT
+    cd "$ZOXIDE_RESULT"
     # create session
     tmux new-session -s $SESSION_NAME
   else
