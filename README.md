@@ -30,12 +30,17 @@ set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
 
 To use the `t` script from anywhere, select your shell environment and follow the instructions.
 
+**Note:** you'll need to check the path of your tpm plugins. It may be `~/.tmux/plugins` or `~/.config/tmux/plugins` depending on where your `tmux.conf` is located.
+
 <details>
 <summary>bash</summary>
 
 Add the following line to `~/.bashrc`
 
 ```fish
+# ~/.tmux/plugins
+export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
+# ~/.config/tmux/plugins
 export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
 </details>
@@ -46,6 +51,9 @@ export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 Add the following line to `~/.zprofile`
 
 ```fish
+# ~/.tmux/plugins
+export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
+# ~/.config/tmux/plugins
 export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
 </details>
@@ -56,6 +64,9 @@ export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 Add the following line to `~/.config/fish/config.fish`
 
 ```fish
+# ~/.tmux/plugins
+fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
+# ~/.config/tmux/plugins
 fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 ```
 </details>
@@ -79,3 +90,5 @@ You can learn more about how the script works in [this video](https://www.youtub
 - [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)
 - [ ] Add Neovim Telescope support?
 - [ ] Add fzf preview support?
+- [ ] Create Raycast plugin
+
