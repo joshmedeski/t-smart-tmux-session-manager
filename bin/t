@@ -1,65 +1,58 @@
 #!/bin/bash
+# cSpell:words elif
 
-if [ "$1" = "-h" ]; then
-  echo ""
-  echo "\033[1m  t - the smart tmux session manager\033[0m"
-  echo "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager"
-  echo ""
-  echo "\033[32m  Run interactive mode"
-  echo "\033[34m      t"
-  echo ""
-  echo "\033[32m  Go to session"
-  echo "\033[34m      t {name}"
-  echo ""
+if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
+    printf "\n"
+    printf "\033[1m  t - the smart tmux session manager\033[0m\n"
+    printf "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager\n"
+    printf "\n"
+    printf "\033[32m  Run interactive mode\n"
+    printf "\033[34m      t\n"
+    printf "\n"
+    printf "\033[32m  Go to session\n"
+    printf "\033[34m      t {name}\n"
+    printf "\n"
+    printf "\033[32m  Open popup (while in tmux)\n"
+    printf "\033[34m      <prefix>+T\n"
+    printf "\n"
+    printf "\033[32m  Show help\n"
+    printf "\033[34m      t -h\n"
+    printf "\033[34m      t --help\n"
+    printf "\n"
 elif [ $# -eq 0 ]; then
-  if [ -z "$TMUX" ]; then
-    ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label ' t - smart tmux session manager ')
-  else
-    ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label ' t - smart tmux session manager ')
-  fi
+    FZF_BORDER_LABEL=" t - smart tmux session manager "
+    if [ "$TMUX" = "" ]; then
+        ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label "$FZF_BORDER_LABEL")
+    else
+        ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label "$FZF_BORDER_LABEL")
+    fi
 else
-  ZOXIDE_RESULT=$(zoxide query $1)
+    ZOXIDE_RESULT=$(zoxide query "$1")
 fi
 
-if [ -z "$ZOXIDE_RESULT" ]; then
-  exit 0
+if [ "$ZOXIDE_RESULT" = "" ]; then
+    exit 1 # exit error if no result
 fi
 
-FOLDER=$(basename $ZOXIDE_RESULT)
-SESSION_NAME=$(echo $FOLDER | tr ' ' '_' | tr '.' '_')
+FOLDER=$(basename "$ZOXIDE_RESULT")
+SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_')
 
-# lookup tmux session name
-SESSION=$(tmux list-sessions | grep -F $SESSION_NAME | awk '{print $1}')
-SESSION=${SESSION//:/}
+SESSION=$(tmux list-sessions | grep -F "$SESSION_NAME" | awk '{print $1}') # find existing session
+SESSION=${SESSION//:/} # grab session name
 
-# if not currently in tmux
-if [ -z "$TMUX" ]; then
-  # tmux is not active
-  if [ -z "$SESSION" ]; then
-    # session does not exist
-    # jump to directory
-    cd $ZOXIDE_RESULT
-    # create session
-    tmux new-session -s $SESSION_NAME
-  else
-    # session exists
-    # attach to session
-    tmux attach -t $SESSION
-  fi
-else
-  # tmux is active
-  if [ -z "$SESSION" ]; then
-    # session does not exist
-    # jump to directory
-    cd "$ZOXIDE_RESULT"
-    # create session
-    tmux new-session -d -s $SESSION_NAME
-    # attach to session
-    tmux switch-client -t $SESSION_NAME
-  else
-    # session exists
-    # attach to session
-    # switch to tmux session
-    tmux switch-client -t $SESSION
-  fi
+if [ "$TMUX" = "" ]; then # if not currently in tmux
+    if [ "$SESSION" = "" ]; then # session does not exist
+        cd "$ZOXIDE_RESULT" || exit 1 # jump to directory
+        tmux new-session -s "$SESSION_NAME" # create session and attach
+    else # session exists
+        tmux attach -t "$SESSION" # attach to session
+    fi
+else # currently in tmux
+    if [ "$SESSION" = "" ]; then # session does not exist
+        cd "$ZOXIDE_RESULT" || exit 1 # jump to directory
+        tmux new-session -d -s "$SESSION_NAME" # create session
+        tmux switch-client -t "$SESSION_NAME" # attach to session
+    else # session exists
+        tmux switch-client -t "$SESSION" # switch to session
+    fi
 fi
