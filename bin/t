@@ -31,7 +31,7 @@ else
 fi
 
 if [ "$ZOXIDE_RESULT" = "" ]; then
-    exit 1 # exit error if no result
+    exit # exit silently if no result
 fi
 
 FOLDER=$(basename "$ZOXIDE_RESULT")
