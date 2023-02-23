@@ -21,10 +21,15 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
 	printf "\n"
 elif [ $# -eq 0 ]; then
 	FZF_BORDER_LABEL=" t - smart tmux session manager "
+	HEADER="ctrl-a all / ctrl-s sessions / ctrl-x zoxide"
+	PROMPT="All> "
+	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && zoxide query -l)"
+	SESSION_BINDING="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
+	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
 	if [ "$TMUX" = "" ]; then
-		ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --border-label "$FZF_BORDER_LABEL")
+		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 	else
-		ZOXIDE_RESULT=$(zoxide query -l | fzf-tmux -p --reverse --border-label "$FZF_BORDER_LABEL")
+		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 	fi
 else
 	ZOXIDE_RESULT=$(zoxide query "$1")
