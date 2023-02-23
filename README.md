@@ -43,6 +43,7 @@ export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 # ~/.config/tmux/plugins
 export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
+
 </details>
 
 <details>
@@ -56,6 +57,7 @@ export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 # ~/.config/tmux/plugins
 export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
+
 </details>
 
 <details>
@@ -69,6 +71,7 @@ fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
 # ~/.config/tmux/plugins
 fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 ```
+
 </details>
 
 ## How to use
@@ -85,10 +88,10 @@ You can learn more about how the script works in [this video](https://www.youtub
 - [x] Merge scripts and reduce logic
 - [x] Add docs
 - [x] Add help flag with basic documentation (`t -h`)
+- [x] List tmux sessions
 - [ ] Publish YouTube video on how to install it
 - [ ] Save zoxide entries selected from t script (with sqlite?)
 - [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)
 - [ ] Add Neovim Telescope support?
 - [ ] Add fzf preview support?
 - [ ] Create Raycast plugin
-
