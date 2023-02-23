@@ -37,7 +37,7 @@ fi
 FOLDER=$(basename "$ZOXIDE_RESULT")
 SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
 
-SESSION=$(tmux list-sessions -F '#S' | grep -F "^$SESSION_NAME$") # find existing session
+SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
 
 if [ "$TMUX" = "" ]; then # if not currently in tmux
     if [ "$SESSION" = "" ]; then # session does not exist
