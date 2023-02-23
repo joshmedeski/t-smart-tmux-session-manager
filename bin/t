@@ -35,7 +35,7 @@ if [ "$ZOXIDE_RESULT" = "" ]; then
 fi
 
 FOLDER=$(basename "$ZOXIDE_RESULT")
-SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_')
+SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
 
 SESSION=$(tmux list-sessions | grep -F "$SESSION_NAME" | awk '{print $1}') # find existing session
 SESSION=${SESSION//:/} # grab session name
