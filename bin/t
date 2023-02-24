@@ -26,9 +26,13 @@ elif [ $# -eq 0 ]; then
 	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && zoxide query -l)"
 	SESSION_BINDING="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
 	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
-	if [ "$TMUX" = "" ]; then
-		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
-	else
+	if [ "$TMUX" = "" ]; then       # if not currently in tmux
+		if tmux info &>/dev/null; then # if tmux is running
+			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+		else # tmux is not running
+			ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+		fi
+	else # currently in tmux
 		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 	fi
 else
