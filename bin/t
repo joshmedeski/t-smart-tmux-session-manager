@@ -23,20 +23,20 @@ elif [ $# -eq 0 ]; then
 	FZF_BORDER_LABEL=" t - smart tmux session manager "
 	HEADER="ctrl-a all / ctrl-s sessions / ctrl-x zoxide"
 	PROMPT="All> "
-	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && zoxide query -l)"
+	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && (zoxide query -l | sed -e \"s#^$HOME#~#\"))"
 	SESSION_BINDING="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
-	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
+	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l | sed -e \"s#^$HOME#~#\")"
 	if [ "$TMUX" = "" ]; then       # if not currently in tmux
 		if tmux info &>/dev/null; then # if tmux is running
-			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && (zoxide query -l | sed -e "s#^$HOME#~#")) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 		else # tmux is not running
-			ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+			ZOXIDE_RESULT=$(zoxide query -l | sed -e "s#^$HOME#~#" | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 		fi
 	else # currently in tmux
-		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && (zoxide query -l | sed -e "s#^$HOME#~#")) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 	fi
 else
-	ZOXIDE_RESULT=$(zoxide query "$1")
+	ZOXIDE_RESULT=$(zoxide query "$1" | sed -e "s#^$HOME#~#")
 fi
 
 if [ "$ZOXIDE_RESULT" = "" ]; then
