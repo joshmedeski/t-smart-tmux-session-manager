@@ -13,6 +13,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [tmux](https://github.com/tmux/tmux)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf)
+- [fd](https://github.com/sharkdp/fd) (optional)
 
 ## How to install
 
@@ -89,6 +90,7 @@ You can learn more about how the script works in [this video](https://www.youtub
 - [x] Add docs
 - [x] Add help flag with basic documentation (`t -h`)
 - [x] List tmux sessions
+- [x] Add option to start a session for any directory under the home dir
 - [ ] Publish YouTube video on how to install it
 - [ ] Save zoxide entries selected from t script (with sqlite?)
 - [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)

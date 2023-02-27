@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # cSpell:words elif
 
 if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
@@ -21,19 +21,28 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
 	printf "\n"
 elif [ $# -eq 0 ]; then
 	FZF_BORDER_LABEL=" t - smart tmux session manager "
-	HEADER="ctrl-a all / ctrl-s sessions / ctrl-x zoxide"
+	HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide / ctrl-p: path"
 	PROMPT="All> "
 	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && zoxide query -l)"
 	SESSION_BINDING="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
 	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
+
+  # Use `fd` to generate a list of sub-directories under `$HOME`
+  PATH_BINDING="ctrl-p:change-prompt(Path> )+reload(cd $HOME && echo $HOME; fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
+
+  # If `fd` isn't installed, use `find` to generate a list of sub-directories under the current directory
+  if ! command -v fd &> /dev/null; then
+    PATH_BINDING="ctrl-p:change-prompt(Path> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
+  fi
+
 	if [ "$TMUX" = "" ]; then       # if not currently in tmux
 		if tmux info &>/dev/null; then # if tmux is running
-			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --bind "$PATH_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 		else # tmux is not running
-			ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+			ZOXIDE_RESULT=$(zoxide query -l | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --bind "$PATH_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 		fi
 	else # currently in tmux
-		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --bind "$PATH_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
 	fi
 else
 	ZOXIDE_RESULT=$(zoxide query "$1")
