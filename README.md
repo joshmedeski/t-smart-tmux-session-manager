@@ -83,7 +83,7 @@ Run interactive mode
     ctrl-a list tmux sessions and zoxide results (default)
     ctrl-s list only tmux sessions
     ctrl-z list only zoxide results
-    ctrl-p list fd results (or find if fd isn't installed)
+    ctrl-d list directories
 
 Go to session (matches tmux session, zoxide result, or path)
     t {name}
@@ -105,7 +105,7 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 - `ctrl-a` list tmux sessions and zoxide results (default)
 - `ctrl-s` list only tmux sessions
 - `ctrl-z` list only zoxide results
-- `ctrl-p` list fd results (or find if fd isn't installed)
+- `ctrl-d` list directories (or find if fd isn't installed)
 
 You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
 
