@@ -1,7 +1,6 @@
 #!/bin/bash
-# cSpell:words elif
 
-if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
+if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\n"
 	printf "\033[1m  t - the smart tmux session manager\033[0m\n"
 	printf "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager\n"
@@ -19,48 +18,74 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then
 	printf "\033[34m      t -h\n"
 	printf "\033[34m      t --help\n"
 	printf "\n"
-elif [ $# -eq 0 ]; then
-	FZF_BORDER_LABEL=" t - smart tmux session manager "
-	HEADER="ctrl-a all / ctrl-s sessions / ctrl-x zoxide"
-	PROMPT="All> "
-	ALL_BINDING="ctrl-a:change-prompt(All> )+reload(tmux list-sessions -F '#S' && (zoxide query -l | sed -e \"s#^$HOME#~#\"))"
-	SESSION_BINDING="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
-	ZOXIDE_BINDING="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l | sed -e \"s#^$HOME#~#\")"
-	if [ "$TMUX" = "" ]; then       # if not currently in tmux
-		if tmux info &>/dev/null; then # if tmux is running
-			ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && (zoxide query -l | sed -e "s#^$HOME#~#")) | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+	exit 0
+fi
+
+tmux ls >/dev/null
+TMUX_STATUS=$?
+BORDER_LABEL=" t - smart tmux session manager "
+HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide"
+SESSION_BIND="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
+ZOXIDE_BIND="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
+PROMPT="All> "
+ALL_BIND="ctrl-a:change-prompt($PROMPT)+reload(tmux list-sessions -F '#S' && zoxide query -l)"
+
+if [ $# -eq 0 ]; then             # no argument provided
+	if [ "$TMUX" = "" ]; then        # not in tmux
+		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
+			RESULT=$(
+				(tmux list-sessions -F '#S' && zoxide query -l) | fzf \
+					--reverse \
+					--header "$HEADER" \
+					--prompt "$PROMPT" \
+					--border-label "$BORDER_LABEL" \
+					--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND"
+			)
 		else # tmux is not running
-			ZOXIDE_RESULT=$(zoxide query -l | sed -e "s#^$HOME#~#" | fzf --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+			RESULT=$(
+				zoxide query -l | fzf \
+					--reverse \
+					--prompt "$PROMPT"
+			)
 		fi
-	else # currently in tmux
-		ZOXIDE_RESULT=$( (tmux list-sessions -F '#S' && (zoxide query -l | sed -e "s#^$HOME#~#")) | fzf-tmux -p --reverse --prompt "$PROMPT" --bind "$ALL_BINDING" --bind "$SESSION_BINDING" --bind "$ZOXIDE_BINDING" --border-label "$FZF_BORDER_LABEL" --header "$HEADER")
+	else # in tmux
+		RESULT=$(
+			(tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p \
+				--reverse \
+				--header "$HEADER" \
+				--prompt "$PROMPT" \
+				--border-label "$BORDER_LABEL" \
+				--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND"
+		)
 	fi
-else
-	ZOXIDE_RESULT=$(zoxide query "$1" | sed -e "s#^$HOME#~#")
+else # argument provided
+	RESULT=$(zoxide query "$1")
 fi
 
-if [ "$ZOXIDE_RESULT" = "" ]; then
-	exit # exit silently if no result
+if [ "$RESULT" = "" ]; then # no result
+	exit                       # exit silently
 fi
 
-FOLDER=$(basename "$ZOXIDE_RESULT")
+FOLDER=$(basename "$RESULT")
 SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
 
-SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
+if [ $TMUX_STATUS -eq 0 ]; then                                 # tmux is running
+	SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
+else
+	SESSION=""
+fi
 
-if [ "$TMUX" = "" ]; then             # if not currently in tmux
-	if [ "$SESSION" = "" ]; then         # session does not exist
-		cd "$ZOXIDE_RESULT" || exit 1       # jump to directory
-		tmux new-session -s "$SESSION_NAME" # create session and attach
-	else                                 # session exists
-		tmux attach -t "$SESSION"           # attach to session
+if [ "$TMUX" = "" ]; then                          # not currently in tmux
+	if [ "$SESSION" = "" ]; then                      # session does not exist
+		tmux new-session -s "$SESSION_NAME" -c "$RESULT" # create session and attach
+	else                                              # session exists
+		tmux attach -t "$SESSION"                        # attach to session
 	fi
-else                                     # currently in tmux
-	if [ "$SESSION" = "" ]; then            # session does not exist
-		cd "$ZOXIDE_RESULT" || exit 1          # jump to directory
-		tmux new-session -d -s "$SESSION_NAME" # create session
-		tmux switch-client -t "$SESSION_NAME"  # attach to session
-	else                                    # session exists
-		tmux switch-client -t "$SESSION"       # switch to session
+else                                                  # currently in tmux
+	if [ "$SESSION" = "" ]; then                         # session does not exist
+		tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session
+		tmux switch-client -t "$SESSION_NAME"               # attach to session
+	else                                                 # session exists
+		tmux switch-client -t "$SESSION"                    # switch to session
 	fi
 fi
