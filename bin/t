@@ -21,7 +21,7 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	exit 0
 fi
 
-tmux ls >/dev/null
+tmux ls &>/dev/null
 TMUX_STATUS=$?
 BORDER_LABEL=" t - smart tmux session manager "
 HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide"
@@ -59,7 +59,20 @@ if [ $# -eq 0 ]; then             # no argument provided
 		)
 	fi
 else # argument provided
-	RESULT=$(zoxide query "$1")
+	zoxide query "$1" &>/dev/null
+	ZOXIDE_RESULT_EXIT_CODE=$?
+	if [ $ZOXIDE_RESULT_EXIT_CODE -eq 0 ]; then # zoxide result found
+		RESULT=$(zoxide query "$1")
+	else # no zoxide result found
+		ls "$1" &>/dev/null
+		LS_EXIT_CODE=$?
+		if [ $LS_EXIT_CODE -eq 0 ]; then # directory found
+			RESULT=$1
+		else # no directory found
+			echo "No directory found."
+			exit 1
+		fi
+	fi
 fi
 
 if [ "$RESULT" = "" ]; then # no result
