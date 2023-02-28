@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\n"
@@ -8,7 +8,7 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\033[32m  Run interactive mode\n"
 	printf "\033[34m      t\n"
 	printf "\n"
-	printf "\033[32m  Go to session\n"
+	printf "\033[32m  Go to session (matches tmux session, zoxide result, or path)\n"
 	printf "\033[34m      t {name}\n"
 	printf "\n"
 	printf "\033[32m  Open popup (while in tmux)\n"
@@ -24,11 +24,17 @@ fi
 tmux ls &>/dev/null
 TMUX_STATUS=$?
 BORDER_LABEL=" t - smart tmux session manager "
-HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide"
+HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide / ctrl-p: path"
 SESSION_BIND="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l)"
 PROMPT="All> "
 ALL_BIND="ctrl-a:change-prompt($PROMPT)+reload(tmux list-sessions -F '#S' && zoxide query -l)"
+
+if fd --version &>/dev/null; then # fd is installed
+	PATH_BIND="ctrl-p:change-prompt(Path> )+reload(cd $HOME && fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
+else # fd is not installed
+	PATH_BIND="ctrl-p:change-prompt(Path> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
+fi
 
 if [ $# -eq 0 ]; then             # no argument provided
 	if [ "$TMUX" = "" ]; then        # not in tmux
@@ -39,7 +45,7 @@ if [ $# -eq 0 ]; then             # no argument provided
 					--header "$HEADER" \
 					--prompt "$PROMPT" \
 					--border-label "$BORDER_LABEL" \
-					--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND"
+					--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND" --bind "$PATH_BIND"
 			)
 		else # tmux is not running
 			RESULT=$(
@@ -50,12 +56,12 @@ if [ $# -eq 0 ]; then             # no argument provided
 		fi
 	else # in tmux
 		RESULT=$(
-			(tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p \
+			(tmux list-sessions -F '#S' && zoxide query -l) | fzf-tmux -p 70% \
 				--reverse \
 				--header "$HEADER" \
 				--prompt "$PROMPT" \
 				--border-label "$BORDER_LABEL" \
-				--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND"
+				--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND" --bind "$PATH_BIND"
 		)
 	fi
 else # argument provided
@@ -76,7 +82,7 @@ else # argument provided
 fi
 
 if [ "$RESULT" = "" ]; then # no result
-	exit                       # exit silently
+	exit 0                     # exit silently
 fi
 
 FOLDER=$(basename "$RESULT")
