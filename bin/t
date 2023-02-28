@@ -85,6 +85,7 @@ if [ "$RESULT" = "" ]; then # no result
 	exit 0                     # exit silently
 fi
 
+zoxide add "$RESULT" &>/dev/null # add to zoxide database
 FOLDER=$(basename "$RESULT")
 SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
 
