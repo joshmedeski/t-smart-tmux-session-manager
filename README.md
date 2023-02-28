@@ -6,13 +6,14 @@
 
 # t - the smart tmux session manager
 
-tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create tmux sessions.
+tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create and switch tmux sessions:
 
 ## Prerequisites
 
 - [tmux](https://github.com/tmux/tmux)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf)
+- [fd](https://github.com/sharkdp/fd) (optional)
 
 ## How to install
 
@@ -76,9 +77,35 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 ## How to use
 
+```sh
+Run interactive mode
+    t
+    ctrl-a list tmux sessions and zoxide results (default)
+    ctrl-s list only tmux sessions
+    ctrl-z list only zoxide results
+    ctrl-p list fd results (or find if fd isn't installed)
+
+Go to session (matches tmux session, zoxide result, or path)
+    t {name}
+
+Open popup (while in tmux)
+    <prefix>+T"
+
+Show help
+    t -h
+    t --help
+```
+
 By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup that display zoxide results. Type the result you want and when you hit enter it will create a tmux session and connect to it or, if the sessions already exists, switch to it.
 
 If you are not in tmux, you can simply run `t` to start the interactive script, or call `t {name}` to jump directly to a session of your choosing.
+
+### Key Bindings
+
+- `ctrl-a` list tmux sessions and zoxide results (default)
+- `ctrl-s` list only tmux sessions
+- `ctrl-z` list only zoxide results
+- `ctrl-p` list fd results (or find if fd isn't installed)
 
 You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
 
@@ -89,6 +116,8 @@ You can learn more about how the script works in [this video](https://www.youtub
 - [x] Add docs
 - [x] Add help flag with basic documentation (`t -h`)
 - [x] List tmux sessions
+- [x] Use argument as directory fallback
+- [x] Add extra `fd` script
 - [ ] Publish YouTube video on how to install it
 - [ ] Save zoxide entries selected from t script (with sqlite?)
 - [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)
