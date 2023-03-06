@@ -12,7 +12,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 - [tmux](https://github.com/tmux/tmux)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
-- [fzf](https://github.com/junegunn/fzf)
+- [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 - [fd](https://github.com/sharkdp/fd) (optional)
 
 ## How to install
