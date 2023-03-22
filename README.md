@@ -75,6 +75,25 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 </details>
 
+### 3. Recommended tmux settings
+
+I recommend you add these settings to your `tmux.conf` to have a better experience with this script.
+
+```
+bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
+set -g detach-on-destroy off  # don't exit from tmux when closing a session
+```
+
+### 4. Customize Prompt (optional)
+
+If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
+
+```
+set -g @t-fzf-prompt '  '
+```
+
+Or you can replace the prompt with anything you'd like.
+
 ## How to use
 
 ```sh
@@ -102,7 +121,6 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 ### Key Bindings
 
-- `ctrl-a` list tmux sessions and zoxide results (default)
 - `ctrl-s` list only tmux sessions
 - `ctrl-z` list only zoxide results
 - `ctrl-d` list directories (or find if fd isn't installed)
