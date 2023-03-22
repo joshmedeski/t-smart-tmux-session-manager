@@ -21,6 +21,18 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	exit 0
 fi
 
+tmux ls &>/dev/null
+TMUX_STATUS=$?
+
+get_fzf_prompt() {
+	local fzf_prompt
+	local fzf_default_prompt='>  '
+	if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
+		fzf_prompt="$(tmux show -gqv '@t-fzf-prompt')"
+	fi
+	[ -n "$fzf_prompt" ] && echo "$fzf_prompt" || echo "$fzf_default_prompt"
+}
+
 HOME_REPLACER=""                                          # default to a noop
 echo "$HOME" | grep -E "^[a-zA-Z0-9\-_/.@]+$" &>/dev/null # chars safe to use in sed
 HOME_SED_SAFE=$?
@@ -28,19 +40,16 @@ if [ $HOME_SED_SAFE -eq 0 ]; then # $HOME should be safe to use in sed
 	HOME_REPLACER="s|^$HOME/|~/|"
 fi
 
-tmux ls &>/dev/null
-TMUX_STATUS=$?
 BORDER_LABEL=" t - smart tmux session manager "
-HEADER="ctrl-a: all / ctrl-s: sessions / ctrl-x: zoxide / ctrl-d: directory"
-SESSION_BIND="ctrl-s:change-prompt(Sessions> )+reload(tmux list-sessions -F '#S')"
-ZOXIDE_BIND="ctrl-x:change-prompt(Zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
-PROMPT="All> "
-ALL_BIND="ctrl-a:change-prompt($PROMPT)+reload(tmux list-sessions -F '#S' && (zoxide query -l | sed -e \"$HOME_REPLACER\"))"
+HEADER=" ctrl-s: sessions / ctrl-x: zoxide / ctrl-d: directory"
+PROMPT=$(get_fzf_prompt)
+SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
+ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
 
 if fd --version &>/dev/null; then # fd is installed
-	DIR_BIND="ctrl-d:change-prompt(Directory> )+reload(cd $HOME && echo $HOME; fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
+	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && echo $HOME; fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
 else # fd is not installed
-	DIR_BIND="ctrl-d:change-prompt(Directory> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
+	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
 fi
 
 if [ $# -eq 0 ]; then             # no argument provided
@@ -48,27 +57,32 @@ if [ $# -eq 0 ]; then             # no argument provided
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
 			RESULT=$(
 				(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
-					--reverse \
-					--header "$HEADER" \
-					--prompt "$PROMPT" \
+					--bind "$DIR_BIND" \
+					--bind "$SESSION_BIND" \
+					--bind "$ZOXIDE_BIND" \
 					--border-label "$BORDER_LABEL" \
-					--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND" --bind "$DIR_BIND"
+					--header "$HEADER" \
+					--prompt "$PROMPT"
 			)
 		else # tmux is not running
 			RESULT=$(
 				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
-					--reverse \
+					--bind "$DIR_BIND" \
+					--border-label "$BORDER_LABEL" \
+					--header " ctrl-d: directory" \
 					--prompt "$PROMPT"
 			)
 		fi
 	else # in tmux
 		RESULT=$(
-			(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux -p 70% \
-				--reverse \
+			(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+				--bind "$DIR_BIND" \
+				--bind "$SESSION_BIND" \
+				--bind "$ZOXIDE_BIND" \
+				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
 				--prompt "$PROMPT" \
-				--border-label "$BORDER_LABEL" \
-				--bind "$ALL_BIND" --bind "$SESSION_BIND" --bind "$ZOXIDE_BIND" --bind "$DIR_BIND"
+				-p 60%,50%
 		)
 	fi
 else # argument provided
