@@ -75,7 +75,16 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 </details>
 
-### 3. Customize Prompt (optional)
+### 3. Recommended tmux settings
+
+I recommend you add these settings to your `tmux.conf` to have a better experience with this script.
+
+```
+bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
+set -g detach-on-destroy off  # don't exit from tmux when closing a session
+```
+
+### 4. Customize Prompt (optional)
 
 If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
 
@@ -84,15 +93,6 @@ set -g @t-fzf-prompt '  '
 ```
 
 Or you can replace the prompt with anything you'd like.
-
-### 4. Recommended tmux settings
-
-I recommend you add these settings to your `tmux.conf` to have a better experience with this script.
-
-```
-bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
-set -g detach-on-destroy off  # don't exit from tmux when closing a session
-```
 
 ## How to use
 
