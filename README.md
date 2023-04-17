@@ -127,6 +127,14 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
 
+## How to add a custom keybinding
+
+In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
+
+```
+bind-key J run-shell "t"
+```
+
 ## Tasks
 
 - [x] Create tpm plugin
