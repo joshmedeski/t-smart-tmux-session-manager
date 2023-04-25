@@ -23,7 +23,7 @@ This script can be installed with the [Tmux Plugin Manager (tpm)](https://github
 
 Add the following line to your `~/.tmux.conf` file:
 
-```conf
+```sh
 set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
 ```
 
