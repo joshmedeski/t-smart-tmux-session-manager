@@ -38,7 +38,7 @@ To use the `t` script from anywhere, select your shell environment and follow th
 
 Add the following line to `~/.bashrc`
 
-```fish
+```sh
 # ~/.tmux/plugins
 export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 # ~/.config/tmux/plugins
@@ -52,7 +52,7 @@ export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 
 Add the following line to `~/.zprofile`
 
-```fish
+```sh
 # ~/.tmux/plugins
 export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 # ~/.config/tmux/plugins
@@ -79,7 +79,7 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 I recommend you add these settings to your `tmux.conf` to have a better experience with this script.
 
-```
+```sh
 bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
 set -g detach-on-destroy off  # don't exit from tmux when closing a session
 ```
@@ -88,7 +88,7 @@ set -g detach-on-destroy off  # don't exit from tmux when closing a session
 
 If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
 
-```
+```sh
 set -g @t-fzf-prompt '  '
 ```
 
@@ -131,22 +131,11 @@ You can learn more about how the script works in [this video](https://www.youtub
 
 In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
 
-```
+```sh
 bind-key J run-shell "t"
 ```
 
-## Tasks
+## Background
 
-- [x] Create tpm plugin
-- [x] Merge scripts and reduce logic
-- [x] Add docs
-- [x] Add help flag with basic documentation (`t -h`)
-- [x] List tmux sessions
-- [x] Use argument as directory fallback
-- [x] Add extra `fd` script
-- [ ] Publish YouTube video on how to install it
-- [ ] Save zoxide entries selected from t script (with sqlite?)
-- [ ] Allow user to overwrite options (ex: `set -g @t-smart-tmux-session-manager-options "-p --reverse`)
-- [ ] Add Neovim Telescope support?
-- [ ] Add fzf preview support?
-- [ ] Create Raycast plugin
+Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
+]
