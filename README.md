@@ -146,7 +146,6 @@ Interested in learning more about how this script came to be? Check out [Smart t
 ## Bonus: macOS keyboard shortcut
 
 My personal workflow uses [macOS Keyboard Shortcuts for tmux](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/). I have bound the `t` popup to `cmd+j` with the following code:
-]
 
 <details>
 <summary>Alacritty</summary>
@@ -171,4 +170,4 @@ map cmd+j send_text all \x02\x54
 
 </details>
 
-**Note:** You can easily swap out "cmd+j" for whatever keybinding works best for you.
+**Note:** These bindings are based off the default prefix, `ctrl+b` (which converts to `\x02`). If you changed your prefix, I recommend [watching my video](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/) which goes into depth how to customize your own keybindings in Alacritty.
