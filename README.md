@@ -11,6 +11,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 ## Prerequisites
 
 - [tmux](https://github.com/tmux/tmux)
+- [tpm](https://github.com/tmux-plugins/tpm)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 - [fd](https://github.com/sharkdp/fd) (optional)
@@ -19,13 +20,15 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 ### 1. Install tpm plugin
 
-This script can be installed with the [Tmux Plugin Manager (tpm)](https://github.com/tmux-plugins/tpm).
-
-Add the following line to your `~/.tmux.conf` file:
+Add the following line to your `tmux.conf` file:
 
 ```sh
 set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
 ```
+
+**Note:** tpm recommends you list your plugins and then run tpm at the very bottom of your `tmux.conf`.
+
+Then, run `<prefix>I` to install the plugin.
 
 ### 2. Add to path
 
@@ -77,7 +80,7 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 ### 3. Recommended tmux settings
 
-I recommend you add these settings to your `tmux.conf` to have a better experience with this script.
+I recommend you add these settings to your `tmux.conf` to have a better experience with this plugin.
 
 ```sh
 bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
@@ -97,22 +100,24 @@ Or you can replace the prompt with anything you'd like.
 ## How to use
 
 ```sh
-Run interactive mode
-    t
-    ctrl-a list tmux sessions and zoxide results (default)
-    ctrl-s list only tmux sessions
-    ctrl-z list only zoxide results
-    ctrl-d list directories
+  Run interactive mode
+      t
+        ctrl-s list only tmux sessions
+        ctrl-x list only zoxide results
+        ctrl-d list directories
 
-Go to session (matches tmux session, zoxide result, or path)
-    t {name}
+  Go to session (matches tmux session, zoxide result, or directory)
+      t {name}
 
-Open popup (while in tmux)
-    <prefix>+T"
+  Open popup (while in tmux)
+      <prefix>+T
+        ctrl-s list only tmux sessions
+        ctrl-x list only zoxide results
+        ctrl-d list directories
 
-Show help
-    t -h
-    t --help
+  Show help
+      t -h
+      t --help
 ```
 
 By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup that display zoxide results. Type the result you want and when you hit enter it will create a tmux session and connect to it or, if the sessions already exists, switch to it.
@@ -122,10 +127,8 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 ### Key Bindings
 
 - `ctrl-s` list only tmux sessions
-- `ctrl-z` list only zoxide results
+- `ctrl-x` list only zoxide results
 - `ctrl-d` list directories (or find if fd isn't installed)
-
-You can learn more about how the script works in [this video](https://www.youtube.com/watch?v=l_TTxc0AcCw).
 
 ## How to add a custom keybinding
 
@@ -139,3 +142,33 @@ bind-key J run-shell "t"
 
 Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
 ]
+
+## Bonus: macOS keyboard shortcut
+
+My personal workflow uses [macOS Keyboard Shortcuts for tmux](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/). I have bound the `t` popup to `cmd+j` with the following code:
+]
+
+<details>
+<summary>Alacritty</summary>
+
+Add the following line to your `alacritty.yml`
+
+```yml
+key_bindings:
+  - { key: J, mods: Command, chars: "\x02\x54" } # open t - tmux smart session manager
+```
+
+</details>
+
+<details>
+<summary>Kitty</summary>
+
+Add the following line to your `kitty.conf`
+
+```sh
+map cmd+j send_text all \x02\x54
+```
+
+</details>
+
+**Note:** You can easily swap out "cmd+j" for whatever keybinding works best for you.
