@@ -135,8 +135,10 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
 
 ```sh
-bind-key J run-shell "t"
+set -g @t-bind "J"
 ```
+
+You can unbind the default by entering an unmappable string (e.g. `none`)
 
 ## Background
 
