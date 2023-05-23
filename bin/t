@@ -68,6 +68,7 @@ if [ $# -eq 0 ]; then             # no argument provided
 					--bind "$ZOXIDE_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header "$HEADER" \
+					--no-sort \
 					--prompt "$PROMPT"
 			)
 		else # tmux is not running
@@ -76,6 +77,7 @@ if [ $# -eq 0 ]; then             # no argument provided
 					--bind "$DIR_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header " ctrl-d: directory" \
+					--no-sort \
 					--prompt "$PROMPT"
 			)
 		fi
@@ -87,6 +89,7 @@ if [ $# -eq 0 ]; then             # no argument provided
 				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
+				--no-sort \
 				--prompt "$PROMPT" \
 				-p 60%,50%
 		)
