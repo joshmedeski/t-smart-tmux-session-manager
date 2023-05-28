@@ -61,7 +61,7 @@ fi
 if [ $# -eq 0 ]; then             # no argument provided
 	if [ "$TMUX" = "" ]; then        # not in tmux
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
-			RESULT=$(
+			FZF_RESULT=$(
 				(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
 					--bind "$DIR_BIND" \
 					--bind "$SESSION_BIND" \
@@ -69,20 +69,30 @@ if [ $# -eq 0 ]; then             # no argument provided
 					--border-label "$BORDER_LABEL" \
 					--header "$HEADER" \
 					--no-sort \
-					--prompt "$PROMPT"
+					--prompt "$PROMPT" \
+					--print-query
 			)
+			FZF_EXIT_CODE=$?
+			mapfile -t FZF_RESULT <<<"$FZF_RESULT"
+			QUERY=${FZF_RESULT[0]}
+			RESULT=${FZF_RESULT[1]}
 		else # tmux is not running
-			RESULT=$(
+			FZF_RESULT=$(
 				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
 					--bind "$DIR_BIND" \
 					--border-label "$BORDER_LABEL" \
 					--header " ctrl-d: directory" \
 					--no-sort \
-					--prompt "$PROMPT"
+					--prompt "$PROMPT" \
+					--print-query
 			)
+			FZF_EXIT_CODE=$?
+			mapfile -t FZF_RESULT <<<"$FZF_RESULT"
+			QUERY=${FZF_RESULT[0]}
+			RESULT=${FZF_RESULT[1]}
 		fi
 	else # in tmux
-		RESULT=$(
+		FZF_RESULT=$(
 			(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
 				--bind "$DIR_BIND" \
 				--bind "$SESSION_BIND" \
@@ -91,8 +101,13 @@ if [ $# -eq 0 ]; then             # no argument provided
 				--header "$HEADER" \
 				--no-sort \
 				--prompt "$PROMPT" \
-				-p 60%,50%
+				-p 60%,50% \
+				--print-query
 		)
+		FZF_EXIT_CODE=$?
+		mapfile -t FZF_RESULT <<<"$FZF_RESULT"
+		QUERY=${FZF_RESULT[0]}
+		RESULT=${FZF_RESULT[1]}
 	fi
 else # argument provided
 	zoxide query "$1" &>/dev/null
@@ -111,22 +126,23 @@ else # argument provided
 	fi
 fi
 
-if [ "$RESULT" = "" ]; then # no result
-	exit 0                     # exit silently
-fi
+if [ "$FZF_EXIT_CODE" -eq 0 ]; then
+	if [ $HOME_SED_SAFE -eq 0 ]; then
+		RESULT=$(echo "$RESULT" | sed -e "s|^~/|$HOME/|") # get real home path back
+	fi
 
-if [ $HOME_SED_SAFE -eq 0 ]; then
-	RESULT=$(echo "$RESULT" | sed -e "s|^~/|$HOME/|") # get real home path back
-fi
+	zoxide add "$RESULT" &>/dev/null # add to zoxide database
+	FOLDER=$(basename "$RESULT")
+	SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
 
-zoxide add "$RESULT" &>/dev/null # add to zoxide database
-FOLDER=$(basename "$RESULT")
-SESSION_NAME=$(echo "$FOLDER" | tr ' ' '_' | tr '.' '_' | tr ':' '_')
-
-if [ $TMUX_STATUS -eq 0 ]; then                                 # tmux is running
-	SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
+	if [ $TMUX_STATUS -eq 0 ]; then                                 # tmux is running
+		SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
+	else
+		SESSION=""
+	fi
 else
-	SESSION=""
+	SESSION_NAME="$QUERY"
+	RESULT=""
 fi
 
 if [ "$TMUX" = "" ]; then                          # not currently in tmux
@@ -135,11 +151,19 @@ if [ "$TMUX" = "" ]; then                          # not currently in tmux
 	else                                              # session exists
 		tmux attach -t "$SESSION"                        # attach to session
 	fi
-else                                                  # currently in tmux
-	if [ "$SESSION" = "" ]; then                         # session does not exist
-		tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session
-		tmux switch-client -t "$SESSION_NAME"               # attach to session
-	else                                                 # session exists
-		tmux switch-client -t "$SESSION"                    # switch to session
+else                                                                        # currently in tmux
+	if [ "$SESSION" = "" ]; then                                               # session does not exist
+		if [ "$RESULT" = "" ]; then                                               # no direcotry given
+			if [ "$(tmux show-option -gqv "@t-new-session-on-empty")" = "on" ]; then # user wants session
+				tmux new-session -d -s "$SESSION_NAME"                                  # create session
+			else
+				exit 0
+			fi
+		else                                                 # direcotry given
+			tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session at direcotry
+		fi
+		tmux switch-client -t "$SESSION_NAME" # attach to session
+	else                                   # session exists
+		tmux switch-client -t "$SESSION"      # switch to session
 	fi
 fi

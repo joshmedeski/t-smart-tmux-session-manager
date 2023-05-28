@@ -87,7 +87,9 @@ bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
 set -g detach-on-destroy off  # don't exit from tmux when closing a session
 ```
 
-### 4. Customize Prompt (optional)
+## Configuration (optional)
+
+### 1. Customize Prompt
 
 If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
 
@@ -96,6 +98,24 @@ set -g @t-fzf-prompt '  '
 ```
 
 Or you can replace the prompt with anything you'd like.
+
+### 2. Set a custom keybindings
+
+In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
+
+```sh
+set -g @t-bind "J"
+```
+
+You can unbind the default by entering an unmappable string (e.g. `none`)
+
+### 3. Set the empty session creation option
+
+When running the script inside tmux you may want to crete an empty session when your query doesn't match any, to do so add the following to your `tmux.conf`:
+
+```sh
+set -g @t-new-session-on-empty "on"
+```
 
 ## How to use
 
@@ -129,16 +149,6 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 - `ctrl-s` list only tmux sessions
 - `ctrl-x` list only zoxide results
 - `ctrl-d` list directories (or find if fd isn't installed)
-
-## How to add a custom keybinding
-
-In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
-
-```sh
-set -g @t-bind "J"
-```
-
-You can unbind the default by entering an unmappable string (e.g. `none`)
 
 ## Background
 
