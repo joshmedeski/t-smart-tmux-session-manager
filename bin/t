@@ -58,11 +58,15 @@ else # fd is not installed
 	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
 fi
 
+get_sessions_by_mru() {
+	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
+}
+
 if [ $# -eq 0 ]; then             # no argument provided
 	if [ "$TMUX" = "" ]; then        # not in tmux
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
 			RESULT=$(
-				(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
+				(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
 					--bind "$DIR_BIND" \
 					--bind "$SESSION_BIND" \
 					--bind "$ZOXIDE_BIND" \
@@ -83,7 +87,7 @@ if [ $# -eq 0 ]; then             # no argument provided
 		fi
 	else # in tmux
 		RESULT=$(
-			(tmux list-sessions -F '#S' && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
 				--bind "$DIR_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$ZOXIDE_BIND" \
