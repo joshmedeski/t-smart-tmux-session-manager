@@ -46,7 +46,7 @@ get_fzf_prompt() {
 }
 
 BORDER_LABEL=" t - smart tmux session manager "
-HEADER=" ^a:all ^s:sessions ^d:kill ^f:find ^z:zoxide"
+HEADER=" ^a:all ^s:sessions ^d:kill ^f:find ^x:zoxide"
 PROMPT=$(get_fzf_prompt)
 ALL_BIND="ctrl-a:change-prompt($PROMPT)+reload($CURRENT_DIR/t-tmux && $CURRENT_DIR/t-zoxide)"
 KILL_BIND="ctrl-d:execute-silent(tmux kill-session -t {})+reload($CURRENT_DIR/t-tmux && $CURRENT_DIR/t-zoxide)"
