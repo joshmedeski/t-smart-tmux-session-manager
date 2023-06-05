@@ -5,20 +5,24 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\033[1m  t - the smart tmux session manager\033[0m\n"
 	printf "\033[37m  https://github.com/joshmedeski/t-smart-tmux-session-manager\n"
 	printf "\n"
-	printf "\033[32m  Run interactive mode\n"
+	printf "\033[32m  Run interactive mode (no argument)\n"
 	printf "\033[34m      t\n"
+	printf "\033[34m        ctrl-a list all entries\n"
 	printf "\033[34m        ctrl-s list only tmux sessions\n"
+	printf "\033[34m        ctrl-d kill tmux session\n"
+	printf "\033[34m        ctrl-f find directory\n"
 	printf "\033[34m        ctrl-x list only zoxide results\n"
-	printf "\033[34m        ctrl-d list directories\n"
 	printf "\n"
 	printf "\033[32m  Go to session (matches tmux session, zoxide result, or directory)\n"
 	printf "\033[34m      t {name}\n"
 	printf "\n"
 	printf "\033[32m  Open popup (while in tmux)\n"
 	printf "\033[34m      <prefix>+T\n"
+	printf "\033[34m        ctrl-a list all entries\n"
 	printf "\033[34m        ctrl-s list only tmux sessions\n"
+	printf "\033[34m        ctrl-d kill tmux session\n"
+	printf "\033[34m        ctrl-f find directory\n"
 	printf "\033[34m        ctrl-x list only zoxide results\n"
-	printf "\033[34m        ctrl-d list directories\n"
 	printf "\n"
 	printf "\033[32m  Show help\n"
 	printf "\033[34m      t -h\n"
@@ -26,6 +30,8 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\n"
 	exit 0
 fi
+
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 tmux ls &>/dev/null
 TMUX_STATUS=$?
@@ -39,35 +45,28 @@ get_fzf_prompt() {
 	[ -n "$fzf_prompt" ] && echo "$fzf_prompt" || echo "$fzf_default_prompt"
 }
 
-HOME_REPLACER=""                                          # default to a noop
-echo "$HOME" | grep -E "^[a-zA-Z0-9\-_/.@]+$" &>/dev/null # chars safe to use in sed
-HOME_SED_SAFE=$?
-if [ $HOME_SED_SAFE -eq 0 ]; then # $HOME should be safe to use in sed
-	HOME_REPLACER="s|^$HOME/|~/|"
-fi
-
 BORDER_LABEL=" t - smart tmux session manager "
-HEADER=" ctrl-s: sessions / ctrl-x: zoxide / ctrl-d: directory"
+HEADER=" ^a:all ^s:sessions ^d:kill ^f:find ^z:zoxide"
 PROMPT=$(get_fzf_prompt)
-SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
-ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
+ALL_BIND="ctrl-a:change-prompt($PROMPT)+reload($CURRENT_DIR/t-tmux && $CURRENT_DIR/t-zoxide)"
+KILL_BIND="ctrl-d:execute-silent(tmux kill-session -t {})+reload($CURRENT_DIR/t-tmux && $CURRENT_DIR/t-zoxide)"
+SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload($CURRENT_DIR/t-tmux)"
+ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload($CURRENT_DIR/t-zoxide)"
 
 if fd --version &>/dev/null; then # fd is installed
-	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && echo $HOME; fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
+	FIND_BIND="ctrl-f:change-prompt(fd> )+reload(cd $HOME && echo $HOME; fd --type d --hidden --absolute-path --color never --exclude .git --exclude node_modules)"
 else # fd is not installed
-	DIR_BIND="ctrl-d:change-prompt(directory> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
+	FIND_BIND="ctrl-f:change-prompt(find> )+reload(cd $HOME && find ~+ -type d -name node_modules -prune -o -name .git -prune -o -type d -print)"
 fi
-
-get_sessions_by_mru() {
-	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
-}
 
 if [ $# -eq 0 ]; then             # no argument provided
 	if [ "$TMUX" = "" ]; then        # not in tmux
 		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
 			RESULT=$(
-				(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
-					--bind "$DIR_BIND" \
+				("$CURRENT_DIR"/t-tmux && "$CURRENT_DIR"/t-zoxide) | fzf \
+					--bind "$ALL_BIND" \
+					--bind "$FIND_BIND" \
+					--bind "$KILL_BIND" \
 					--bind "$SESSION_BIND" \
 					--bind "$ZOXIDE_BIND" \
 					--border-label "$BORDER_LABEL" \
@@ -77,18 +76,21 @@ if [ $# -eq 0 ]; then             # no argument provided
 			)
 		else # tmux is not running
 			RESULT=$(
-				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
-					--bind "$DIR_BIND" \
+				"$CURRENT_DIR"/t-zoxide | fzf \
+					--bind "$FIND_BIND" \
+					--bind "$ZOXIDE_BIND" \
 					--border-label "$BORDER_LABEL" \
-					--header " ctrl-d: directory" \
+					--header "^f:find ^x:zoxide" \
 					--no-sort \
 					--prompt "$PROMPT"
 			)
 		fi
 	else # in tmux
 		RESULT=$(
-			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
-				--bind "$DIR_BIND" \
+			("$CURRENT_DIR"/t-tmux && "$CURRENT_DIR"/t-zoxide) | fzf-tmux \
+				--bind "$ALL_BIND" \
+				--bind "$FIND_BIND" \
+				--bind "$KILL_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
@@ -119,8 +121,10 @@ if [ "$RESULT" = "" ]; then # no result
 	exit 0                     # exit silently
 fi
 
+echo "$HOME" | grep -E "^[a-zA-Z0-9\-_/.@]+$" &>/dev/null # chars safe to use in sed
+HOME_SED_SAFE=$?
 if [ $HOME_SED_SAFE -eq 0 ]; then
-	RESULT=$(echo "$RESULT" | sed -e "s|^~/|$HOME/|") # get real home path back
+	RESULT="${RESULT/^~/$HOME//}"
 fi
 
 zoxide add "$RESULT" &>/dev/null # add to zoxide database
