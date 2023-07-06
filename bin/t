@@ -25,7 +25,13 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\033[34m      t {name}\n"
 	printf "\n"
 	printf "\033[32m  Open popup (while in tmux)\n"
-	printf "\033[34m      <prefix>+T\n"
+	if [ "$T_RUNTYPE" == "attached" ]; then
+		T_BIND=$(tmux show-option -gvq "@t-bind")
+	fi
+	if [ "$T_BIND" = "" ]; then
+		T_BIND="T"
+	fi
+	printf "\033[34m      <prefix>+%s\n" "$T_BIND"
 	printf "\033[34m        ctrl-s list only tmux sessions\n"
 	printf "\033[34m        ctrl-x list only zoxide results\n"
 	printf "\033[34m        ctrl-d list directories\n"
