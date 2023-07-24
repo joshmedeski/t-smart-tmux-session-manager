@@ -10,7 +10,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 ## Prerequisites
 
-- [tmux](https://github.com/tmux/tmux)
+- [tmux](https://github.com/tmux/tmux) (>= 3.2)
 - [tpm](https://github.com/tmux-plugins/tpm)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
