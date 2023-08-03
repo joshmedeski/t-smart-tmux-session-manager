@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+if tmux list-sessions &>/dev/null; then # tmux server is running
+	if [ "$TMUX" ]; then                   # inside tmux
+		T_RUNTYPE="attached"
+	else # outside tmux
+		T_RUNTYPE="detached"
+	fi
+else # tmux server is not running
+	T_RUNTYPE="serverless"
+fi
+
 if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	printf "\n"
 	printf "\033[1m  t - the smart tmux session manager\033[0m\n"
@@ -27,13 +37,10 @@ if [ "$1" = "-h" ] || [ "$1" == "--help" ]; then # help argument
 	exit 0
 fi
 
-tmux ls &>/dev/null
-TMUX_STATUS=$?
-
 get_fzf_prompt() {
 	local fzf_prompt
 	local fzf_default_prompt='>  '
-	if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
+	if [ "$T_RUNTYPE" != "serverless" ]; then
 		fzf_prompt="$(tmux show -gqv '@t-fzf-prompt')"
 	fi
 	[ -n "$fzf_prompt" ] && echo "$fzf_prompt" || echo "$fzf_default_prompt"
@@ -62,43 +69,7 @@ get_sessions_by_mru() {
 	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
 }
 
-if [ $# -eq 0 ]; then             # no argument provided
-	if [ "$TMUX" = "" ]; then        # not in tmux
-		if [ $TMUX_STATUS -eq 0 ]; then # tmux is running
-			RESULT=$(
-				(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
-					--bind "$DIR_BIND" \
-					--bind "$SESSION_BIND" \
-					--bind "$ZOXIDE_BIND" \
-					--border-label "$BORDER_LABEL" \
-					--header "$HEADER" \
-					--no-sort \
-					--prompt "$PROMPT"
-			)
-		else # tmux is not running
-			RESULT=$(
-				(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
-					--bind "$DIR_BIND" \
-					--border-label "$BORDER_LABEL" \
-					--header " ctrl-d: directory" \
-					--no-sort \
-					--prompt "$PROMPT"
-			)
-		fi
-	else # in tmux
-		RESULT=$(
-			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
-				--bind "$DIR_BIND" \
-				--bind "$SESSION_BIND" \
-				--bind "$ZOXIDE_BIND" \
-				--border-label "$BORDER_LABEL" \
-				--header "$HEADER" \
-				--no-sort \
-				--prompt "$PROMPT" \
-				-p 60%,50%
-		)
-	fi
-else # argument provided
+if [ $# -eq 1 ]; then # argument provided
 	zoxide query "$1" &>/dev/null
 	ZOXIDE_RESULT_EXIT_CODE=$?
 	if [ $ZOXIDE_RESULT_EXIT_CODE -eq 0 ]; then # zoxide result found
@@ -113,6 +84,44 @@ else # argument provided
 			exit 1
 		fi
 	fi
+else # argument not provided
+	case $T_RUNTYPE in
+	attached)
+		RESULT=$(
+			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+				--bind "$DIR_BIND" \
+				--bind "$SESSION_BIND" \
+				--bind "$ZOXIDE_BIND" \
+				--border-label "$BORDER_LABEL" \
+				--header "$HEADER" \
+				--no-sort \
+				--prompt "$PROMPT" \
+				-p 60%,50%
+		)
+		;;
+	detached)
+		RESULT=$(
+			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
+				--bind "$DIR_BIND" \
+				--bind "$SESSION_BIND" \
+				--bind "$ZOXIDE_BIND" \
+				--border-label "$BORDER_LABEL" \
+				--header "$HEADER" \
+				--no-sort \
+				--prompt "$PROMPT"
+		)
+		;;
+	serverless)
+		RESULT=$(
+			(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
+				--bind "$DIR_BIND" \
+				--border-label "$BORDER_LABEL" \
+				--header " ctrl-d: directory" \
+				--no-sort \
+				--prompt "$PROMPT"
+		)
+		;;
+	esac
 fi
 
 if [ "$RESULT" = "" ]; then # no result
@@ -127,23 +136,21 @@ zoxide add "$RESULT" &>/dev/null # add to zoxide database
 FOLDER=$(basename "$RESULT")
 SESSION_NAME=$(echo "$FOLDER" | tr ' .:' '_')
 
-if [ $TMUX_STATUS -eq 0 ]; then                                 # tmux is running
+if [ "$T_RUNTYPE" != "serverless" ]; then
 	SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
-else
-	SESSION=""
 fi
 
-if [ "$TMUX" = "" ]; then                          # not currently in tmux
-	if [ "$SESSION" = "" ]; then                      # session does not exist
-		tmux new-session -s "$SESSION_NAME" -c "$RESULT" # create session and attach
-	else                                              # session exists
-		tmux attach -t "$SESSION"                        # attach to session
-	fi
-else                                                  # currently in tmux
-	if [ "$SESSION" = "" ]; then                         # session does not exist
-		tmux new-session -d -s "$SESSION_NAME" -c "$RESULT" # create session
-		tmux switch-client -t "$SESSION_NAME"               # attach to session
-	else                                                 # session exists
-		tmux switch-client -t "$SESSION"                    # switch to session
-	fi
+if [ "$SESSION" = "" ]; then # session is missing
+	SESSION="$SESSION_NAME"
+	tmux new-session -d -s "$SESSION" -c "$RESULT" # create session
 fi
+
+case $T_RUNTYPE in # attach to session
+attached)
+	tmux switch-client -t "$SESSION"
+	;;
+detached) ;&
+serverless)
+	tmux attach -t "$SESSION"
+	;;
+esac
