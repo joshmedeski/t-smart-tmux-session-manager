@@ -1,6 +1,6 @@
 {
   "language": "en",
-  "words": ["zoxide", "maxdepth", "esac", "RUNTYPE", "joshmedeski"],
   "flagWords": [],
+  "words": ["zoxide", "maxdepth", "esac", "RUNTYPE", "joshmedeski", "btab"],
   "version": "0.2"
 }

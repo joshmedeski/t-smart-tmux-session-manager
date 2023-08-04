@@ -89,6 +89,7 @@ BORDER_LABEL=" t - smart tmux session manager "
 HEADER=" ^s sessions ^x zoxide ^f find"
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
+TAB_BIND="tab:down,btab:up"
 
 get_sessions_by_mru() {
 	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
@@ -116,6 +117,7 @@ else # argument not provided
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
+				--bind "$TAB_BIND" \
 				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
@@ -129,6 +131,7 @@ else # argument not provided
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
+				--bind "$TAB_BIND" \
 				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
@@ -140,6 +143,7 @@ else # argument not provided
 		RESULT=$(
 			(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
 				--bind "$FIND_BIND" \
+				--bind "$TAB_BIND" \
 				--border-label "$BORDER_LABEL" \
 				--header " ^f find" \
 				--no-sort \
