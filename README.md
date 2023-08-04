@@ -158,7 +158,7 @@ You can customize this command by setting `@t-find-binding` variable to your `tm
 In this example, I'm setting the prompt with a custom [Nerd Font icon](https://www.nerdfonts.com/) and using [fd](https://github.com/sharkdp/fd) to search directories (including hidden ones) up to two levels deep from my home directory.
 
 ```sh
-set -g @t-find-binding 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d . ~)'
+set -g @t-fzf-find-binding 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d . ~)'
 ```
 
 Run `man fzf` to learn more about how to customize key bindings with fzf.
