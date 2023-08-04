@@ -1,8 +1,6 @@
 {
-  "version": "0.2",
-  "words": [
-    "zoxide"
-  ],
+  "language": "en",
+  "words": ["zoxide", "maxdepth", "esac", "RUNTYPE", "joshmedeski"],
   "flagWords": [],
-  "language": "en"
+  "version": "0.2"
 }
