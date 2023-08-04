@@ -103,6 +103,7 @@ Or you can replace the prompt with anything you'd like.
       t
         ctrl-s list only tmux sessions
         ctrl-x list only zoxide results
+        ctrl-f list results from the find command
 
   Go to session (matches tmux session, zoxide result, or directory)
       t {name}
@@ -111,6 +112,7 @@ Or you can replace the prompt with anything you'd like.
       <prefix>+T
         ctrl-s list only tmux sessions
         ctrl-x list only zoxide results
+        ctrl-f list results from the find command
 
   Show help
       t -h
