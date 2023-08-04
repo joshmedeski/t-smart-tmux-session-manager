@@ -14,7 +14,6 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [tpm](https://github.com/tmux-plugins/tpm)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
-- [fd](https://github.com/sharkdp/fd) (optional)
 
 ## How to install
 
@@ -104,7 +103,7 @@ Or you can replace the prompt with anything you'd like.
       t
         ctrl-s list only tmux sessions
         ctrl-x list only zoxide results
-        ctrl-d list directories
+        ctrl-f list results from the find command
 
   Go to session (matches tmux session, zoxide result, or directory)
       t {name}
@@ -113,7 +112,7 @@ Or you can replace the prompt with anything you'd like.
       <prefix>+T
         ctrl-s list only tmux sessions
         ctrl-x list only zoxide results
-        ctrl-d list directories
+        ctrl-f list results from the find command
 
   Show help
       t -h
@@ -128,17 +127,41 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 - `ctrl-s` list only tmux sessions
 - `ctrl-x` list only zoxide results
-- `ctrl-d` list directories (or find if fd isn't installed)
+- `ctrl-f` find by directory
 
-## How to add a custom keybinding
+## How to customize
 
-In order to add your own custom key binding to trigger the `t` script, add the following to your `tmux.conf`:
+### Custom fzf-tmux keybinding
+
+By default, the `t` popup is bound to `<prefix>T`. In order to overwrite your own custom key binding, add setting the `@t-bind` varaible to your `tmux.conf`:
 
 ```sh
-set -g @t-bind "J"
+set -g @t-bind "K"
 ```
 
-You can unbind the default by entering an unmappable string (e.g. `none`)
+You can unbind the default by using `none`.
+
+```sh
+set -g @t-bind "none" # unbind default
+```
+
+### Custom find command
+
+By default, the find key binding (`^f`) will run a simple `find` command to search for directories in and around your home directory.
+
+```sh
+find ~ -maxdepth 3 -type d
+```
+
+You can customize this command by setting `@t-find-binding` variable to your `tmux.conf`:
+
+In this example, I'm setting the prompt with a custom [Nerd Font icon](https://www.nerdfonts.com/) and using [fd](https://github.com/sharkdp/fd) to search directories (including hidden ones) up to two levels deep from my home directory.
+
+```sh
+set -g @t-fzf-find-binding 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d . ~)'
+```
+
+Run `man fzf` to learn more about how to customize key bindings with fzf.
 
 ## Background
 
@@ -156,7 +179,7 @@ Add the following line to your `alacritty.yml`
 
 ```yml
 key_bindings:
-  - { key: J, mods: Command, chars: "\x02\x54" } # open t - tmux smart session manager
+  - { key: K, mods: Command, chars: "\x02\x54" } # open t - tmux smart session manager
 ```
 
 </details>
@@ -167,7 +190,7 @@ key_bindings:
 Add the following line to your `kitty.conf`
 
 ```sh
-map cmd+j send_text all \x02\x54
+map cmd+k send_text all \x02\x54
 ```
 
 </details>
