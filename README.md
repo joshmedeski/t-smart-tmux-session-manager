@@ -6,7 +6,7 @@
 
 # t - the smart tmux session manager
 
-tmux is a powerful tool, but dealing with sessions can be painful. This scriptmakes it easy to create and switch tmux sessions:
+tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create and switch tmux sessions:
 
 ## Prerequisites
 
