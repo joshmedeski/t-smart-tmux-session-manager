@@ -178,6 +178,8 @@ export FZF_TMUX_OPTS="-p 55%,60%"
 set -Ux FZF_TMUX_OPTS "-p 55%,60%"
 ```
 
+Run `man fzf-tmux` to learn more about the available options.
+
 ## Background
 
 Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
