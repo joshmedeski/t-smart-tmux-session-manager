@@ -119,7 +119,6 @@ else # argument not provided
 
 		RESULT=$(
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
-				$FZF_TMUX_OPTS \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$TAB_BIND" \
@@ -127,7 +126,8 @@ else # argument not provided
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
 				--no-sort \
-				--prompt "$PROMPT"
+				--prompt "$PROMPT" \
+				$FZF_TMUX_OPTS
 		)
 		;;
 	detached)
