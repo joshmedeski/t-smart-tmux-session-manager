@@ -164,6 +164,22 @@ set -g @t-fzf-find-binding 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d .
 
 Run `man fzf` to learn more about how to customize key bindings with fzf.
 
+### FZF_TMUX_OPTS
+
+If you want to overwrite the fzf-tmux options, you can set the `FZF_TMUX_OPTS` variable in your shell environment.
+
+```bash
+# ~/.bashrc or ~/.zshrc
+export FZF_TMUX_OPTS="-p 55%,60%"
+```
+
+```fish
+# ~/.config/fish/config.fish
+set -Ux FZF_TMUX_OPTS "-p 55%,60%"
+```
+
+Run `man fzf-tmux` to learn more about the available options.
+
 ## Background
 
 Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).

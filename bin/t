@@ -113,6 +113,10 @@ if [ $# -eq 1 ]; then # argument provided
 else # argument not provided
 	case $T_RUNTYPE in
 	attached)
+		if [[ ! -v $FZF_TMUX_OPTS ]]; then
+			FZF_TMUX_OPTS="-p 53%,58%"
+		fi
+
 		RESULT=$(
 			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
 				--bind "$FIND_BIND" \
@@ -123,7 +127,7 @@ else # argument not provided
 				--header "$HEADER" \
 				--no-sort \
 				--prompt "$PROMPT" \
-				-p 60%,50%
+				$FZF_TMUX_OPTS
 		)
 		;;
 	detached)
