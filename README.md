@@ -132,6 +132,43 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 ## How to customize
 
+### Include parent dir in session name
+
+You may prefer your session names having a prefix of the parent directory. This can help with naming conflicts if you have multiple directories with the same name on your machine.
+
+<details>
+<summary>bash</summary>
+
+Add the following line to `~/.bashrc`
+
+```sh
+export T_SESSION_NAME_INCLUDE_PARENT="true"
+```
+
+</details>
+
+<details>
+<summary>zsh</summary>
+
+Add the following line to `~/.zshrc`
+
+```sh
+export T_SESSION_NAME_INCLUDE_PARENT="true"
+```
+
+</details>
+
+<details>
+<summary>fish</summary>
+
+Add the following line to `~/.config/fish/conf.d/t.fish`
+
+```fish
+set -Ux T_SESSION_NAME_INCLUDE_PARENT true
+```
+
+</details>
+
 ### Custom fzf-tmux keybinding
 
 By default, the `t` popup is bound to `<prefix>T`. In order to overwrite your own custom key binding, add setting the `@t-bind` varaible to your `tmux.conf`:
