@@ -166,8 +166,12 @@ if [ $HOME_SED_SAFE -eq 0 ]; then
 fi
 
 zoxide add "$RESULT" &>/dev/null # add to zoxide database
-FOLDER=$(basename "$RESULT")
-SESSION_NAME=$(echo "$FOLDER" | tr ' .:' '_')
+
+if [[ $T_SESSION_NAME_INCLUDE_PARENT == 'true' ]]; then
+	SESSION_NAME=$(echo $RESULT | tr ' .:' '_' | awk -F "/" '{print $(NF-1)"/"$NF}')
+else
+	SESSION_NAME=$(basename "$RESULT" | tr ' .:' '_')
+fi
 
 if [ "$T_RUNTYPE" != "serverless" ]; then
 	SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
