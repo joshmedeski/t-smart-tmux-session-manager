@@ -16,7 +16,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 
-If your a macOS user, I recommend installing these prerequisites from homebrew to get the latest versions:
+**Note:** Macs have bash v3 preinstalled, you'll need v4 or later for this script. I recommend installing these prerequisites from homebrew to get the latest versions.
 
 ```
 brew install tmux bash zoxide fzf
