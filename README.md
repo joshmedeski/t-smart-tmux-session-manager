@@ -16,6 +16,14 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 
+If your a macOS user, I recommend installing these prerequisites from homebrew to get the latest versions:
+
+```
+brew install tmux bash zoxide fzf
+```
+
+Use the package manager of your OS if you are not on macOS.
+
 ## How to install
 
 ### 1. Install tpm plugin
