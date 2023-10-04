@@ -148,8 +148,9 @@ else # argument not provided
 			(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
 				--bind "$FIND_BIND" \
 				--bind "$TAB_BIND" \
+				--bind "$ZOXIDE_BIND" \
 				--border-label "$BORDER_LABEL" \
-				--header " ^f find" \
+				--header " ^x zoxide ^f find" \
 				--no-sort \
 				--prompt "$PROMPT"
 		)
