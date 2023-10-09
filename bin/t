@@ -85,7 +85,7 @@ get_fzf_find_binding() {
 }
 FIND_BIND=$(get_fzf_find_binding)
 
-BORDER_LABEL=" t - smart tmux session manager "
+BORDER_LABEL=" select session "
 HEADER=" ^s sessions ^x zoxide ^f find"
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
