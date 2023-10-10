@@ -227,10 +227,19 @@ Run `man fzf-tmux` to learn more about the available options.
 
 ### Custom Border Label
 
-If you want to customize the fzf popup, you can set the `@t-fzf-border-label` variable in your `tmux.conf`:
-```sh
-set -g @t-fzf-border-label ' YOUR OWN BORDER LABEL '
+If you want to customize the fzf popup border label, you can add `T_FZF_BORDER_LABEL` to your shell variable
+
+```bash
+# ~/.bashrc or ~/.zshrc
+export T_FZF_BORDER_LABEL=' Your Custom Label '
 ```
+or if you use fish:
+
+```fish
+# ~/.config/fish/config.fish
+set -Ux T_FZF_BORDER_LABEL " Your Custom Label "
+```
+
 
 ## Background
 

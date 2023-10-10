@@ -86,15 +86,8 @@ get_fzf_find_binding() {
 
 FIND_BIND=$(get_fzf_find_binding)
 
-get_fzf_border_label() {
-	local fzf_border_label
-	local fzf_border_label_default=' t - smart tmux session manager '
-	if [ "$TMUX_RUNNING" -eq 0 ]; then
-		fzf_border_label="$(tmux show -gqv '@t-fzf-border-label')"
-	fi
-	[ -n "$fzf_border_label" ] && echo "$fzf_border_label" || echo "$fzf_border_label_default"
-}
-BORDER_LABEL=$(get_fzf_border_label)
+fzf_border_label_default=' t - smart tmux session manager '
+BORDER_LABEL=${T_FZF_BORDER_LABEL:-$fzf_border_label_default}
 
 HEADER=" ^s sessions ^x zoxide ^f find"
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
@@ -147,6 +140,7 @@ else # argument not provided
 				--bind "$SESSION_BIND" \
 				--bind "$TAB_BIND" \
 				--bind "$ZOXIDE_BIND" \
+				--border \
 				--border-label "$BORDER_LABEL" \
 				--header "$HEADER" \
 				--no-sort \
@@ -159,6 +153,7 @@ else # argument not provided
 				--bind "$FIND_BIND" \
 				--bind "$TAB_BIND" \
 				--bind "$ZOXIDE_BIND" \
+				--border \
 				--border-label "$BORDER_LABEL" \
 				--header " ^x zoxide ^f find" \
 				--no-sort \
