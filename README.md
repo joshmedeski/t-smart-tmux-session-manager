@@ -225,6 +225,22 @@ set -Ux FZF_TMUX_OPTS "-p 55%,60%"
 
 Run `man fzf-tmux` to learn more about the available options.
 
+### Custom Border Label
+
+If you want to customize the fzf popup border label, you can add `T_FZF_BORDER_LABEL` to your shell variable
+
+```bash
+# ~/.bashrc or ~/.zshrc
+export T_FZF_BORDER_LABEL=' Your Custom Label '
+```
+or if you use fish:
+
+```fish
+# ~/.config/fish/config.fish
+set -Ux T_FZF_BORDER_LABEL " Your Custom Label "
+```
+
+
 ## Background
 
 Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
