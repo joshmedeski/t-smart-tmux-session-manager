@@ -173,23 +173,17 @@ fi
 
 zoxide add "$RESULT" &>/dev/null # add to zoxide database
 
-if [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
-	GIT_ROOT=$(
-		git -C $RESULT rev-parse --show-toplevel
-	)
-	if [[ $? -ne 0 ]]; then
+if [[ $RESULT != /* ]]; then # not folder path from zoxide result
+	SESSION_NAME=$RESULT
+elif [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
+	GIT_ROOT=$(git -C $RESULT rev-parse --show-toplevel 2>/dev/null) && echo $GIT_ROOT >/dev/null
+	if [[ $? -ne 0 ]]; then # not inside git repository
 		SESSION_NAME=$(basename "$RESULT" | tr ' .:' '_')
-	else
+	else # is in git repository
 		BASENAME=$(basename $GIT_ROOT)
-		echo 'Git root:' >>/tmp/tmux-t.log
-		echo $GIT_ROOT >>/tmp/tmux-t.log
 		RELATIVE_PATH=${RESULT#$GIT_ROOT}
-		echo 'relative path:' >>/tmp/tmux-t.log
-		echo $RELATIVE_PATH >>/tmp/tmux-t.log
 		SEPARATOR="/"
 		FORMATTED_PATH="${RELATIVE_PATH//\//$SEPARATOR}"
-		echo 'formatted path:' >>/tmp/tmux-t.log
-		echo $FORMATTED_PATH >>/tmp/tmux-t.log
 		SESSION_NAME=$(echo $BASENAME$FORMATTED_PATH | tr ' .:' '_')
 	fi
 elif [[ $T_SESSION_NAME_INCLUDE_PARENT == 'true' ]]; then
