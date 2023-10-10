@@ -173,7 +173,26 @@ fi
 
 zoxide add "$RESULT" &>/dev/null # add to zoxide database
 
-if [[ $T_SESSION_NAME_INCLUDE_PARENT == 'true' ]]; then
+if [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
+	GIT_ROOT=$(
+		git -C $RESULT rev-parse --show-toplevel
+	)
+	if [[ $? -ne 0 ]]; then
+		SESSION_NAME=$(basename "$RESULT" | tr ' .:' '_')
+	else
+		BASENAME=$(basename $GIT_ROOT)
+		echo 'Git root:' >>/tmp/tmux-t.log
+		echo $GIT_ROOT >>/tmp/tmux-t.log
+		RELATIVE_PATH=${RESULT#$GIT_ROOT}
+		echo 'relative path:' >>/tmp/tmux-t.log
+		echo $RELATIVE_PATH >>/tmp/tmux-t.log
+		SEPARATOR="/"
+		FORMATTED_PATH="${RELATIVE_PATH//\//$SEPARATOR}"
+		echo 'formatted path:' >>/tmp/tmux-t.log
+		echo $FORMATTED_PATH >>/tmp/tmux-t.log
+		SESSION_NAME=$(echo $BASENAME$FORMATTED_PATH | tr ' .:' '_')
+	fi
+elif [[ $T_SESSION_NAME_INCLUDE_PARENT == 'true' ]]; then
 	SESSION_NAME=$(echo "$RESULT" | tr ' .:' '_' | awk -F "/" '{print $(NF-1)"/"$NF}')
 else
 	SESSION_NAME=$(basename "$RESULT" | tr ' .:' '_')
