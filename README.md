@@ -140,6 +140,43 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 ## How to customize
 
+### Use Git Root for session name
+
+You may prefer your session names starting from the root of the git repository. This can help with naming conflicts if you have multiple directories with the same name on your machine and make it clear when you have multiple sessions open in the same git repository.
+
+<details>
+<summary>bash</summary>
+
+Add the following line to `~/.bashrc`
+
+```sh
+export T_SESSION_USE_GIT_ROOT="true"
+```
+
+</details>
+
+<details>
+<summary>zsh</summary>
+
+Add the following line to `~/.zshrc`
+
+```sh
+export T_SESSION_USE_GIT_ROOT="true"
+```
+
+</details>
+
+<details>
+<summary>fish</summary>
+
+Add the following line to `~/.config/fish/conf.d/t.fish`
+
+```fish
+set -Ux T_SESSION_USE_GIT_ROOT true
+```
+
+</details>
+
 ### Include parent dir in session name
 
 You may prefer your session names having a prefix of the parent directory. This can help with naming conflicts if you have multiple directories with the same name on your machine.
@@ -233,13 +270,13 @@ If you want to customize the fzf popup border label, you can add `T_FZF_BORDER_L
 # ~/.bashrc or ~/.zshrc
 export T_FZF_BORDER_LABEL=' Your Custom Label '
 ```
+
 or if you use fish:
 
 ```fish
 # ~/.config/fish/config.fish
 set -Ux T_FZF_BORDER_LABEL " Your Custom Label "
 ```
-
 
 ## Background
 
