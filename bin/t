@@ -98,6 +98,17 @@ get_sessions_by_mru() {
 	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
 }
 
+# grab the @t-fzf-default-results global variable from tmux or set value to 'sessions zoxied' if none is provided
+get_results_from() {
+	local results_from
+  local default_results_from='zoxide sessions'
+	if [ "$TMUX_RUNNING" -eq 0 ]; then
+		results_from="$(tmux show -gqv '@t-fzf-default-results')"
+	fi
+	[ -n "$results_from" ] && echo "$results_from" || echo "$default_results_from"
+}
+RESULTS_FROM=$(get_results_from)
+
 if [ $# -eq 1 ]; then # argument provided
 	zoxide query "$1" &>/dev/null
 	ZOXIDE_RESULT_EXIT_CODE=$?
@@ -121,7 +132,13 @@ else # argument not provided
 		fi
 
 		RESULT=$(
-			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+			(
+      # check if 'sessions' is provided in the @t-fzf-default-results variable
+      if [[ ${RESULTS_FROM[*]} =~ "sessions" ]]; then get_sessions_by_mru; fi \
+      && \
+      # check if 'zoxide' is provided in the @t-fzf-default-results variable
+      if [[ ${RESULTS_FROM[*]} =~ "zoxide" ]]; then (zoxide query -l | sed -e "$HOME_REPLACER"); fi \
+      ) | fzf-tmux \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$TAB_BIND" \
