@@ -86,6 +86,33 @@ get_fzf_find_binding() {
 
 FIND_BIND=$(get_fzf_find_binding)
 
+get_sessions_by_mru() {
+	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
+}
+
+get_zoxide_results() {
+	zoxide query -l | sed -e "$HOME_REPLACER"
+}
+
+get_fzf_results() {
+	if [ "$TMUX_RUNNING" -eq 0 ]; then
+		fzf_default_results="$(tmux show -gqv '@t-fzf-default-results')"
+		case $fzf_default_results in
+		sessions)
+			get_sessions_by_mru
+			;;
+		zoxide)
+			get_zoxide_results
+			;;
+		*)
+			get_sessions_by_mru && get_zoxide_results # default shows both
+			;;
+		esac
+	else
+		get_zoxide_results # only show zoxide results when outside tmux
+	fi
+}
+
 fzf_border_label_default=' t - smart tmux session manager '
 BORDER_LABEL=${T_FZF_BORDER_LABEL:-$fzf_border_label_default}
 
@@ -93,10 +120,6 @@ HEADER=" ^s sessions ^x zoxide ^f find"
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
 TAB_BIND="tab:down,btab:up"
-
-get_sessions_by_mru() {
-	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
-}
 
 if [ $# -eq 1 ]; then # argument provided
 	zoxide query "$1" &>/dev/null
@@ -121,7 +144,7 @@ else # argument not provided
 		fi
 
 		RESULT=$(
-			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf-tmux \
+			(get_fzf_results) | fzf-tmux \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$TAB_BIND" \
@@ -135,7 +158,7 @@ else # argument not provided
 		;;
 	detached)
 		RESULT=$(
-			(get_sessions_by_mru && (zoxide query -l | sed -e "$HOME_REPLACER")) | fzf \
+			(get_fzf_results) | fzf \
 				--bind "$FIND_BIND" \
 				--bind "$SESSION_BIND" \
 				--bind "$TAB_BIND" \
@@ -149,7 +172,7 @@ else # argument not provided
 		;;
 	serverless)
 		RESULT=$(
-			(zoxide query -l | sed -e "$HOME_REPLACER") | fzf \
+			(get_fzf_results) | fzf \
 				--bind "$FIND_BIND" \
 				--bind "$TAB_BIND" \
 				--bind "$ZOXIDE_BIND" \

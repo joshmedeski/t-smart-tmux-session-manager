@@ -228,6 +228,18 @@ You can unbind the default by using `none`.
 set -g @t-bind "none" # unbind default
 ```
 
+### Change default fzf results
+
+By default, t will display tmux sessions and zoxide results by default. You can change this by setting `@t-fzf-default-results` variable to your `tmux.conf`:
+
+```sh
+set -g @t-fzf-default-results 'sessions' # show tmux sessions by default
+```
+
+```sh
+set -g @t-fzf-default-results 'zoxide' # show zoxide results by default
+```
+
 ### Custom find command
 
 By default, the find key binding (`^f`) will run a simple `find` command to search for directories in and around your home directory.
