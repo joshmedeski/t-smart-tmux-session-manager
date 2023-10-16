@@ -322,4 +322,16 @@ map cmd+k send_text all \x02\x54
 
 </details>
 
+<details>
+<summary>WezTerm</summary>
+
+Add the following line to your `wezterm.lua` inside the **keys** options
+
+```sh
+{ key = 'j', mods = 'CMD', action = wezterm.action.SendString '\x02\x54' }, -- open t - tmux smart session manager
+
+```
+
+</details>
+
 **Note:** These bindings are based off the default prefix, `ctrl+b` (which converts to `\x02`). If you changed your prefix, I recommend [watching my video](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/) which goes into depth how to customize your own keybindings in Alacritty.
