@@ -134,7 +134,7 @@ export T_FZF_PROMPT="  "
 Add the following line to `~/.config/fish/config.fish`
 
 ```fish
-set -Ux T_FZF_PROMPT="  "
+set -Ux T_FZF_PROMPT '  '
 ```
 
 </details>
