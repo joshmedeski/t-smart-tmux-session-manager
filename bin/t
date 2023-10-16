@@ -68,6 +68,9 @@ fi
 get_fzf_prompt() {
 	local fzf_prompt
 	local fzf_default_prompt='>  '
+	if [ "$TMUX_RUNNING" -eq 1 ] && [ $T_FZF_PROMPT != "" ]; then
+		fzf_prompt=$T_FZF_PROMPT
+	fi
 	if [ "$TMUX_RUNNING" -eq 0 ]; then
 		fzf_prompt="$(tmux show -gqv '@t-fzf-prompt')"
 	fi

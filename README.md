@@ -99,9 +99,46 @@ set -g detach-on-destroy off  # don't exit from tmux when closing a session
 
 If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
 
+Add the following line to your `tmux.conf`:
 ```sh
 set -g @t-fzf-prompt '  '
 ```
+
+If a `tmux` server is not running and you want to override the default `>` prompt, then make sure to set the `T_FZF_PROMPT` variable like so:
+
+<details>
+<summary>bash</summary>
+
+Add the following line to `~/.bashrc`
+
+```sh
+export T_FZF_PROMPT="  "
+```
+
+</details>
+
+<details>
+<summary>zsh</summary>
+
+Add the following line to `~/.zprofile`
+
+```sh
+export T_FZF_PROMPT="  "
+```
+
+</details>
+
+<details>
+<summary>fish</summary>
+
+Add the following line to `~/.config/fish/config.fish`
+
+```fish
+set -Ux T_FZF_PROMPT="  "
+```
+
+</details>
+
 
 Or you can replace the prompt with anything you'd like.
 
