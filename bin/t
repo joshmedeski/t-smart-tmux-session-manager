@@ -65,8 +65,7 @@ get_zoxide_results() {
 
 get_fzf_results() {
 	if [ "$TMUX_RUNNING" -eq 0 ]; then
-		fzf_default_results="$(tmux show -gqv '@t-fzf-default-results')"
-		case $fzf_default_results in
+		case $T_FZF_DEFAULT_RESULTS in
 		sessions)
 			get_sessions_by_mru
 			;;
