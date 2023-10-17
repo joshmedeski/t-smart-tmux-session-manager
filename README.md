@@ -45,27 +45,16 @@ To use the `t` script from anywhere, select your shell environment and follow th
 **Note:** you'll need to check the path of your tpm plugins. It may be `~/.tmux/plugins` or `~/.config/tmux/plugins` depending on where your `tmux.conf` is located.
 
 <details>
-<summary>bash</summary>
+<summary>zsh or bash</summary>
 
-Add the following line to `~/.bashrc`
+Add the following line to `~/.bashrc` for bash, and `~/.zprofile` for zsh.
 
 ```sh
 # ~/.tmux/plugins
 export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
-# ~/.config/tmux/plugins
-export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
 
-</details>
-
-<details>
-<summary>zsh</summary>
-
-Add the following line to `~/.zprofile`
-
 ```sh
-# ~/.tmux/plugins
-export PATH=$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 # ~/.config/tmux/plugins
 export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 ```
@@ -75,11 +64,14 @@ export PATH=$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH
 <details>
 <summary>fish</summary>
 
-Add the following line to `~/.config/fish/config.fish`
+Add the following line to `~/.config/fish/conf.d/t.fish`
 
-```fish
+```sh
 # ~/.tmux/plugins
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
+```
+
+```sh
 # ~/.config/tmux/plugins
 fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 ```
@@ -107,61 +99,36 @@ Or you can replace the prompt with anything you'd like.
 
 ## How to use
 
-```sh
-  Run interactive mode
-      t
-        ctrl-s list only tmux sessions
-        ctrl-x list only zoxide results
-        ctrl-f list results from the find command
-
-  Go to session (matches tmux session, zoxide result, or directory)
-      t {name}
-
-  Open popup (while in tmux)
-      <prefix>+T
-        ctrl-s list only tmux sessions
-        ctrl-x list only zoxide results
-        ctrl-f list results from the find command
-
-  Show help
-      t -h
-      t --help
-```
-
 By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup that display zoxide results. Type the result you want and when you hit enter it will create a tmux session and connect to it or, if the sessions already exists, switch to it.
 
 If you are not in tmux, you can simply run `t` to start the interactive script, or call `t {name}` to jump directly to a session of your choosing.
 
-### Key Bindings
-
-- `ctrl-s` list only tmux sessions
-- `ctrl-x` list only zoxide results
-- `ctrl-f` find by directory
+You can run `t --help` or `t -h` to see the help menu.
 
 ## How to customize
 
-### Use Git Root for session name
+There are many ways you can customize this script to fit your workflow. I am also open to pull requests if you have ideas for improvements. Customizations are stored as shell variables, so they can be accessed with or without tmux running. Here are the available variables:
 
-You may prefer your session names starting from the root of the git repository. This can help with naming conflicts if you have multiple directories with the same name on your machine and make it clear when you have multiple sessions open in the same git repository.
-
-<details>
-<summary>bash</summary>
-
-Add the following line to `~/.bashrc`
-
-```sh
-export T_SESSION_USE_GIT_ROOT="true"
-```
-
-</details>
+- `T_FZF_FIND_BINDING`: overwrites the fzf `ctrl-f` key binding, typically used for finding a directory that's not listed in zoxide.
+- `T_FZF_PROMPT`: overwrites the fzf prompt symbol
+- `T_SESSION_USE_GIT_ROOT`: detects the git root of a chosen directory when generating a tmux sessions name
+- `T_SESSION_NAME_INCLUDE_PARENT`: includes the parent directory in the tmux session name
+- `T_FZF_BORDER_LABEL`: overwrites the fzf popup border label
+- `T_FZF_DEFAULT_RESULTS`: overwrites the default fzf results, can be "sessions" or "zoxide" (defaults to sessions and zoxide)
 
 <details>
-<summary>zsh</summary>
+<summary>zsh or bash</summary>
 
-Add the following line to `~/.zshrc`
+Add the following line to `~/.zshrc` for zsh, and `.bashrc` for bash.
 
 ```sh
-export T_SESSION_USE_GIT_ROOT="true"
+# use fd and search two levels deep from home
+export T_FZF_FIND_BINDING = 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d -E .Trash . ~)'
+export T_FZF_PROMPT = '🧠'
+export T_SESSION_USE_GIT_ROOT = true
+export T_SESSION_NAME_INCLUDE_PARENT = true # will fallback to parent if git root is not found
+export T_FZF_BORDER_LABEL = 'the ultimate tmux tool'
+export T_FZF_DEFAULT_RESULTS = 'sessions'
 ```
 
 </details>
@@ -172,47 +139,17 @@ export T_SESSION_USE_GIT_ROOT="true"
 Add the following line to `~/.config/fish/conf.d/t.fish`
 
 ```fish
+set -Ux T_FZF_FIND_BINDING 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d -E .Trash . ~)'
+set -Ux T_FZF_PROMPT '🧠'
 set -Ux T_SESSION_USE_GIT_ROOT true
-```
-
-</details>
-
-### Include parent dir in session name
-
-You may prefer your session names having a prefix of the parent directory. This can help with naming conflicts if you have multiple directories with the same name on your machine.
-
-<details>
-<summary>bash</summary>
-
-Add the following line to `~/.bashrc`
-
-```sh
-export T_SESSION_NAME_INCLUDE_PARENT="true"
-```
-
-</details>
-
-<details>
-<summary>zsh</summary>
-
-Add the following line to `~/.zshrc`
-
-```sh
-export T_SESSION_NAME_INCLUDE_PARENT="true"
-```
-
-</details>
-
-<details>
-<summary>fish</summary>
-
-Add the following line to `~/.config/fish/conf.d/t.fish`
-
-```fish
 set -Ux T_SESSION_NAME_INCLUDE_PARENT true
+set -Ux T_FZF_BORDER_LABEL 'the ultimate tmux tool'
+set -Ux T_FZF_DEFAULT_RESULTS 'sessions'
 ```
 
 </details>
+
+**Note:** `T_SESSION_USE_GIT_ROOT` and `T_SESSION_NAME_INCLUDE_PARENT` are in conflict right now, so I recommend choosing one or the other.
 
 ### Custom fzf-tmux keybinding
 

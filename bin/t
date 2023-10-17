@@ -65,27 +65,6 @@ if [ $HOME_SED_SAFE -eq 0 ]; then # $HOME should be safe to use in sed
 	HOME_REPLACER="s|^$HOME/|~/|"
 fi
 
-get_fzf_prompt() {
-	local fzf_prompt
-	local fzf_default_prompt='>  '
-	if [ "$TMUX_RUNNING" -eq 0 ]; then
-		fzf_prompt="$(tmux show -gqv '@t-fzf-prompt')"
-	fi
-	[ -n "$fzf_prompt" ] && echo "$fzf_prompt" || echo "$fzf_default_prompt"
-}
-PROMPT=$(get_fzf_prompt)
-
-get_fzf_find_binding() {
-	local fzf_find_binding
-	local fzf_find_binding_default='ctrl-f:change-prompt(find> )+reload(find ~ -maxdepth 3 -type d)'
-	if [ "$TMUX_RUNNING" -eq 0 ]; then
-		fzf_find_binding="$(tmux show -gqv '@t-fzf-find-binding')"
-	fi
-	[ -n "$fzf_find_binding" ] && echo "$fzf_find_binding" || echo "$fzf_find_binding_default"
-}
-
-FIND_BIND=$(get_fzf_find_binding)
-
 get_sessions_by_mru() {
 	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
 }
@@ -113,12 +92,12 @@ get_fzf_results() {
 	fi
 }
 
-fzf_border_label_default=' t - smart tmux session manager '
-BORDER_LABEL=${T_FZF_BORDER_LABEL:-$fzf_border_label_default}
-
+BORDER_LABEL=${T_FZF_BORDER_LABEL:-' t - smart tmux session manager '}
+PROMPT=${T_FZF_PROMPT:-'>  '}
 HEADER=" ^s sessions ^x zoxide ^f find"
 SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S')"
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
+FIND_BIND=${T_FZF_FIND_BINDING:-'ctrl-f:change-prompt(find> )+reload(find ~ -maxdepth 3 -type d)'}
 TAB_BIND="tab:down,btab:up"
 
 if [ $# -eq 1 ]; then # argument provided
