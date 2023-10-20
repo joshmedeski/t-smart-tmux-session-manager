@@ -1,0 +1,20 @@
+prSections:
+  - title: My Pull Requests
+    filters: is:open author:@me repo:joshmedeski/t-smart-tmux-session-manager
+  - title: Needs My Review
+    filters: is:open review-requested:@me repo:joshmedeski/t-smart-tmux-session-manager
+  - title: Involved
+    filters: is:open involves:@me -author:@me repo:joshmedeski/t-smart-tmux-session-manager
+issuesSections:
+  - title: Issues
+    filters: is:open repo:joshmedeski/t-smart-tmux-session-manager
+defaults:
+  layout:
+    issues:
+      repo:
+        hidden: true
+    prs:
+      repo:
+        hidden: true
+repoPaths:
+  joshmedeski/t-smart-tmux-session-manager: ~/repos/t-smart-tmux-session-manager
