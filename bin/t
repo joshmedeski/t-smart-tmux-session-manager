@@ -221,7 +221,11 @@ fi
 
 if [ "$SESSION" = "" ]; then # session is missing
 	SESSION="$SESSION_NAME"
-	tmux new-session -d -s "$SESSION" -c "$RESULT" # create session
+	if [ -e $RESULT/.t ]; then
+		tmux new-session -d -s "$SESSION" -c "$RESULT" $RESULT/.t # create session and run .t startup script
+	else
+		tmux new-session -d -s "$SESSION" -c "$RESULT" # create session
+	fi
 fi
 
 case $T_RUNTYPE in # attach to session
