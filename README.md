@@ -295,6 +295,27 @@ set -Ux T_FZF_BORDER_LABEL " Your Custom Label "
 Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
 ]
 
+## Startup script
+
+You can run a startup script when you create a new session. This is useful for running a command when you create a new session, like starting a dev server or automatically opening neovim to begin editing a file.
+
+This works by adding a `.t` file to your desired directory. Here is a quick script for bootstrapping that file:
+
+```sh
+touch .t && chmod +x .t && echo -e '#!/usr/bin/env bash\n' > .t && nvim .t
+```
+
+I like opening Neovim and the find file Telescope prompt to quickly find a file to edit. Here is an example of what I put in many of my projects:
+
+```sh
+#!/usr/bin/env bash
+nvim -c 'Telescope find_files'
+```
+
+So, when you open any project that detects a `.t` it will automatically run that script when a session is created.
+
+This feature is in early development so please feel free to give feedback if you have ideas for how to improve on it.
+
 ## Bonus: macOS keyboard shortcut
 
 My personal workflow uses [macOS Keyboard Shortcuts for tmux](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/). I have bound the `t` popup to `cmd+j` with the following code:
