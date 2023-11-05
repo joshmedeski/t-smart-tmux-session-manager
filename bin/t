@@ -139,9 +139,9 @@ if [ $# -eq 1 ]; then # argument provided
 else # argument not provided
 	case $T_RUNTYPE in
 	attached)
-		if [[ ! -v $FZF_TMUX_OPTS ]]; then
-			FZF_TMUX_OPTS="-p 53%,58%"
-		fi
+    if [[ -z ${FZF_TMUX_OPTS} ]]; then
+      FZF_TMUX_OPTS="-p 53%,58%"
+    fi
 
 		RESULT=$(
 			(get_fzf_results) | fzf-tmux \
@@ -228,12 +228,11 @@ if [ "$SESSION" = "" ]; then # session is missing
 	fi
 fi
 
-case $T_RUNTYPE in # attach to session
-attached)
-	tmux switch-client -t "$SESSION"
-	;;
-detached) ;&
-serverless)
-	tmux attach -t "$SESSION"
-	;;
+case $T_RUNTYPE in
+  attached)
+    tmux switch-client -t "$SESSION"
+    ;;
+  detached | serverless) # Both detached and serverless will execute the same command
+    tmux attach -t "$SESSION"
+    ;;
 esac
