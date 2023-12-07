@@ -12,14 +12,11 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 
 - [tmux](https://github.com/tmux/tmux) (>= 3.2)
 - [tpm](https://github.com/tmux-plugins/tpm)
-- [bash](https://www.gnu.org/software/bash/) (>= 4.0)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 
-**Note:** Macs have bash v3 preinstalled, you'll need v4 or later for this script. I recommend installing these prerequisites from homebrew to get the latest versions.
-
 ```
-brew install tmux bash zoxide fzf
+brew install tmux zoxide fzf
 ```
 
 Use the package manager of your OS if you are not on macOS.
