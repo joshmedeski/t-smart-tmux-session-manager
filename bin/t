@@ -203,8 +203,16 @@ elif [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
 	if [[ $? -ne 0 ]]; then # not inside git repository
 		SESSION_NAME=$(basename "$RESULT" | tr ' .:' '_')
 	else # is in git repository
-		BASENAME=$(basename $GIT_ROOT)
-		RELATIVE_PATH=${RESULT#$GIT_ROOT}
+    BASENAME=$(basename $GIT_ROOT)
+    RELATIVE_PATH=${RESULT#$GIT_ROOT}
+
+    # git worktree
+    if [ "$(git -C $RESULT rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then # is inside git worktree
+      GIT_WORKTREE_ROOT=$(git -C $RESULT rev-parse --git-common-dir | sed 's/\/.bare$// 2>/dev/null')
+      BASENAME=$(basename $GIT_WORKTREE_ROOT)
+      RELATIVE_PATH = ${RESULT#$GIT_WORKTREE_ROOT}
+    fi
+
 		SEPARATOR="/"
 		FORMATTED_PATH="${RELATIVE_PATH//\//$SEPARATOR}"
 		SESSION_NAME=$(echo $BASENAME$FORMATTED_PATH | tr ' .:' '_')
