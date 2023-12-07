@@ -232,8 +232,7 @@ case $T_RUNTYPE in # attach to session
 attached)
 	tmux switch-client -t "$SESSION"
 	;;
-detached) ;&
-serverless)
+detached | serverless)
 	tmux attach -t "$SESSION"
 	;;
 esac
