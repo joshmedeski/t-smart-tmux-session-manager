@@ -139,7 +139,7 @@ if [ $# -eq 1 ]; then # argument provided
 else # argument not provided
 	case $T_RUNTYPE in
 	attached)
-		if [[ ! -v $FZF_TMUX_OPTS ]]; then
+		if [[ -z $FZF_TMUX_OPTS ]]; then
 			FZF_TMUX_OPTS="-p 53%,58%"
 		fi
 
