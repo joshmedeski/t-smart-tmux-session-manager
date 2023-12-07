@@ -207,7 +207,7 @@ elif [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
 		RELATIVE_PATH=${RESULT#$GIT_ROOT}
 
 		# git worktree
-		if [ "$(git -C $RESULT rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then # is inside git worktree
+		if [ "$(git -C $RESULT rev-parse --is-inside-work-tree)" == "true" ] && [ -f "$RESULT/.git" ]; then # is inside git worktree
 			GIT_WORKTREE_ROOT=$(git -C $RESULT rev-parse --git-common-dir | sed 's/\/.bare$//' 2>/dev/null)
 			BASENAME=$(basename $GIT_WORKTREE_ROOT)
 			RELATIVE_PATH=${RESULT#$GIT_WORKTREE_ROOT}
