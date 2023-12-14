@@ -245,7 +245,7 @@ By default, the find key binding (`^f`) will run a simple `find` command to sear
 find ~ -maxdepth 3 -type d
 ```
 
-You can customize this command by setting `@t-find-binding` variable to your `tmux.conf`:
+You can customize this command by setting `@fzf_find_binding` variable to your `tmux.conf`:
 
 In this example, I'm setting the prompt with a custom [Nerd Font icon](https://www.nerdfonts.com/) and using [fd](https://github.com/sharkdp/fd) to search directories (including hidden ones) up to two levels deep from my home directory.
 
