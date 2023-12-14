@@ -235,7 +235,7 @@ fi
 
 get_startup_script() {
 	YQ_SCRIPT=".scripts[] | select(.dir == \"$1\") | .script"
-	FOUND_SCRIPT="$(yq eval "$YQ_SCRIPT" /Users/josh/repos/dotfiles/.config/tmux/t/t-config.yml)"
+	FOUND_SCRIPT="$(yq eval "$YQ_SCRIPT" ${HOME}/repos/dotfiles/.config/tmux/t/t-config.yml)"
 	echo $FOUND_SCRIPT
 }
 
@@ -244,7 +244,7 @@ if [ "$SESSION" = "" ]; then # session is missing
 	STARTUP_SCRIPT="$(get_startup_script $RESULT)"
 	if [ -n $STARTUP_SCRIPT ]; then
 		tmux new-session -d -s "$SESSION" -c "$RESULT"
-		/Users/josh/repos/dotfiles/.config/tmux/t/scripts/$STARTUP_SCRIPT $SESSION
+		~/.config/tmux/t/scripts/$STARTUP_SCRIPT $SESSION
 	else
 		tmux new-session -d -s "$SESSION" -c "$RESULT" # create session
 	fi
