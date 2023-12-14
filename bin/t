@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+get_config_value() {
+	local key=$1
+	local value
+	if test -f "$USER_CONFIG"; then
+		value="$(yq "$key" "$USER_CONFIG")"
+		if [ "$value" == "null" ]; then # get default config value
+			value="$(yq "$key" "$DEFAULT_CONFIG")"
+		fi
+	else
+		value="$(yq "$key" "$DEFAULT_CONFIG")"
+	fi
+	echo "$value"
+}
+
 # determine if the tmux server is running
 if tmux list-sessions &>/dev/null; then
 	TMUX_RUNNING=0
@@ -219,10 +233,18 @@ if [ "$T_RUNTYPE" != "serverless" ]; then
 	SESSION=$(tmux list-sessions -F '#S' | grep "^$SESSION_NAME$") # find existing session
 fi
 
+get_startup_script() {
+	YQ_SCRIPT=".scripts[] | select(.dir == \"$1\") | .script"
+	FOUND_SCRIPT="$(yq eval "$YQ_SCRIPT" /Users/josh/repos/dotfiles/.config/tmux/t/t-config.yml)"
+	echo $FOUND_SCRIPT
+}
+
 if [ "$SESSION" = "" ]; then # session is missing
 	SESSION="$SESSION_NAME"
-	if [ -e $RESULT/.t ]; then
-		tmux new-session -d -s "$SESSION" -c "$RESULT" $RESULT/.t # create session and run .t startup script
+	STARTUP_SCRIPT="$(get_startup_script $RESULT)"
+	if [ -n $STARTUP_SCRIPT ]; then
+		tmux new-session -d -s "$SESSION" -c "$RESULT"
+		/Users/josh/repos/dotfiles/.config/tmux/t/scripts/$STARTUP_SCRIPT $SESSION
 	else
 		tmux new-session -d -s "$SESSION" -c "$RESULT" # create session
 	fi

@@ -14,6 +14,7 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [tpm](https://github.com/tmux-plugins/tpm)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
+- [yq](https://github.com/mikefarah/yq) (>=4)
 
 ```
 brew install tmux zoxide fzf
