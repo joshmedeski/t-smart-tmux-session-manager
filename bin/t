@@ -121,19 +121,41 @@ SESSION_BIND="ctrl-s:change-prompt(sessions> )+reload(tmux list-sessions -F '#S'
 ZOXIDE_BIND="ctrl-x:change-prompt(zoxide> )+reload(zoxide query -l | sed -e \"$HOME_REPLACER\")"
 TAB_BIND="tab:down,btab:up"
 
-if [ $# -eq 1 ]; then # argument provided
-	zoxide query "$1" &>/dev/null
-	ZOXIDE_RESULT_EXIT_CODE=$?
-	if [ $ZOXIDE_RESULT_EXIT_CODE -eq 0 ]; then # zoxide result found
-		RESULT=$(zoxide query "$1")
-	else # no zoxide result found
-		ls "$1" &>/dev/null
-		LS_EXIT_CODE=$?
-		if [ $LS_EXIT_CODE -eq 0 ]; then # directory found
-			RESULT=$1
-		else # no directory found
-			echo "No directory found."
+if [ $# -ge 1 ]; then # argument provided
+	if [ "$1" = "-r" ] || [ "$1" == "--repo" ]; then
+		if [ -z "$2" ]; then
+			echo "No repository url provided -r {url}"
 			exit 1
+		fi
+		REPO_URL=$2
+		if [[ $REPO_URL =~ \/([^\/]+)\.git$ ]]; then
+			REPO="${BASH_REMATCH[1]}"
+			if [[ -z $T_REPOS_DIR ]]; then
+				echo "T_REPOS_DIR has not been set"
+				exit 1
+			fi
+			cd $T_REPOS_DIR
+			git clone $REPO_URL
+			RESULT="$T_REPOS_DIR/$REPO"
+		else
+			echo "Invalid GitHub repository URL"
+			exit 1
+		fi
+
+	else # not -r or --repo
+		zoxide query "$1" &>/dev/null
+		ZOXIDE_RESULT_EXIT_CODE=$?
+		if [ $ZOXIDE_RESULT_EXIT_CODE -eq 0 ]; then # zoxide result found
+			RESULT=$(zoxide query "$1")
+		else # no zoxide result found
+			ls "$1" &>/dev/null
+			LS_EXIT_CODE=$?
+			if [ $LS_EXIT_CODE -eq 0 ]; then # directory found
+				RESULT=$1
+			else # no directory found
+				echo "No directory found."
+				exit 1
+			fi
 		fi
 	fi
 else # argument not provided

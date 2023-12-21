@@ -135,6 +135,81 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 - `ctrl-x` list only zoxide results
 - `ctrl-f` find by directory
 
+## Extra features
+
+### Cloning repositories
+
+You can quickly clone a repository to your preferred directory by using the `t` command combined with the `-r` flag (or `--repo`).
+
+First, you have to set the `T_REPO_DIR` variable in your shell environment. Make sure to set it where you want your repositories cloned.
+
+<details>
+<summary>bash</summary>
+
+Add the following line to `~/.bashrc`
+
+```sh
+export T_REPOS_DIR="~/repos"
+```
+
+</details>
+
+<details>
+<summary>zsh</summary>
+
+Add the following line to `~/.zshrc`
+
+```sh
+export T_REPOS_DIR="~/repos"
+```
+
+</details>
+
+<details>
+<summary>fish</summary>
+
+Add the following line to `~/.config/fish/conf.d/t.fish`
+
+```fish
+set -Ux T_REPOS_DIR ~/repos
+```
+
+</details>
+
+In order to use the feature, simply run:
+
+```sh
+t -r https://github.com/joshmedeski/t-smart-tmux-session-manager.git
+```
+
+**Note:** it has to be a valid git remote url (ending in `.git`) or order to work.
+
+I prefer to copy the repository URL to my clipboard and run the following command on macOS.
+
+<details>
+<summary>bash/zsh</summary>
+
+```sh
+t -r $(pbpaste)
+```
+
+</details>
+
+<details>
+<summary>fish</summary>
+
+```sh
+t -r (pbpaste)
+```
+
+</details>
+
+If you want to overwrite the directory to clone to, you can overwrite the `T_REPOS_DIR` variable before running the command:
+
+```sh
+T_REPOS_DIR=~/code t --repo https://github.com/joshmedeski/tmux-list.git
+```
+
 ## How to customize
 
 ### Use Git Root for session name
