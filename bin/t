@@ -135,7 +135,11 @@ if [ $# -ge 1 ]; then # argument provided
 				exit 1
 			fi
 			cd $T_REPOS_DIR
-			gh repo clone $REPO_URL
+			if command -v gh &>/dev/null; then
+				gh repo clone $REPO_URL
+			else
+				git clone $REPO_URL
+			fi
 			RESULT="$T_REPOS_DIR/$REPO"
 		else
 			echo "Invalid GitHub repository URL"
