@@ -204,6 +204,12 @@ t -r (pbpaste)
 
 </details>
 
+If you want to overwrite the directory to clone to, you can overwrite the `T_REPOS_DIR` variable before running the command:
+
+```sh
+T_REPOS_DIR=~/code t --repo https://github.com/joshmedeski/tmux-list.git
+```
+
 ## How to customize
 
 ### Use Git Root for session name
