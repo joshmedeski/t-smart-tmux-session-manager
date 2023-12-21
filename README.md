@@ -141,8 +141,6 @@ If you are not in tmux, you can simply run `t` to start the interactive script, 
 
 You can quickly clone a repository to your preferred directory by using the `t` command combined with the `-r` flag (or `--repo`).
 
-- Requires the [`gh` cli](https://cli.github.com/)
-
 First, you have to set the `T_REPO_DIR` variable in your shell environment. Make sure to set it where you want your repositories cloned.
 
 <details>
