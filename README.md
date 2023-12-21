@@ -179,8 +179,10 @@ set -Ux T_REPOS_DIR ~/repos
 In order to use the feature, simply run:
 
 ```sh
-t -r https://github.com/joshmedeski/t-smart-tmux-session-manager
+t -r https://github.com/joshmedeski/t-smart-tmux-session-manager.git
 ```
+
+**Note:** it has to be a valid git remote url (ending in `.git`) or order to work.
 
 I prefer to copy the repository URL to my clipboard and run the following command on macOS.
 
