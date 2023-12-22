@@ -135,7 +135,7 @@ if [ $# -ge 1 ]; then # argument provided
 				exit 1
 			fi
 			cd $T_REPOS_DIR
-			git clone $REPO_URL
+			git clone --recursive $REPO_URL
 			RESULT="$T_REPOS_DIR/$REPO"
 		else
 			echo "Invalid GitHub repository URL"
