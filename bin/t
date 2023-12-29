@@ -87,7 +87,15 @@ get_fzf_find_binding() {
 FIND_BIND=$(get_fzf_find_binding)
 
 get_sessions_by_mru() {
-	tmux list-sessions -F '#{session_last_attached} #{session_name}' | sort --numeric-sort --reverse | awk '{print $2}'
+	if [ "$T_RUNTYPE" == "attached" ]; then
+		CURRENT_SID=$(tmux display-message -p "#{session_id}")
+	else
+		CURRENT_SID=""
+	fi
+	tmux list-sessions \
+		-f "#{!=:#{session_id},$CURRENT_SID}" \
+		-F '#{session_last_attached} #{session_name}' \
+		| sort --numeric-sort --reverse | awk '{print $2}'
 }
 
 get_zoxide_results() {
