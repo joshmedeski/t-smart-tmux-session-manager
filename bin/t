@@ -235,6 +235,15 @@ elif [[ $T_SESSION_USE_GIT_ROOT == 'true' ]]; then
 	else # is in git repository
 		BASENAME=$(basename $GIT_ROOT)
 		RELATIVE_PATH=${RESULT#$GIT_ROOT}
+
+		# git worktree
+		GIT_WORKTREE_ROOT=$(git -C $RESULT rev-parse --git-common-dir 2>/dev/null) && echo $GIT_WORKTREE_ROOT >/dev/null
+		if [[ $? -eq 0 ]] && [[ ! $GIT_WORKTREE_ROOT =~ ^(\.\./)*\.git$ ]]; then # is inside git worktree
+			GIT_WORKTREE_ROOT=$(echo $GIT_WORKTREE_ROOT | sed -E 's/(\/.git|\/.bare)$//') # remove .git or .bare suffix
+			BASENAME=$(basename $GIT_WORKTREE_ROOT)
+			RELATIVE_PATH=${RESULT#$GIT_WORKTREE_ROOT}
+		fi
+
 		SEPARATOR="/"
 		FORMATTED_PATH="${RELATIVE_PATH//\//$SEPARATOR}"
 		SESSION_NAME=$(echo $BASENAME$FORMATTED_PATH | tr ' .:' '_')
