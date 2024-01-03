@@ -95,7 +95,7 @@ get_sessions_by_mru() {
 	tmux list-sessions \
 		-f "#{!=:#{session_id},$CURRENT_SID}" \
 		-F '#{session_last_attached} #{session_name}' \
-		| sort --numeric-sort --reverse | awk '{print $2}'
+		| sort --numeric-sort --reverse | awk '{print $2}; END {print "———"}'
 }
 
 get_zoxide_results() {
