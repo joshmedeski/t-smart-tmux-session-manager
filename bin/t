@@ -131,23 +131,23 @@ TAB_BIND="tab:down,btab:up"
 
 if [ $# -ge 1 ]; then # argument provided
 	if [ "$1" = "-r" ] || [ "$1" == "--repo" ]; then
+		if [[ -z $T_REPOS_DIR ]]; then
+			echo "T_REPOS_DIR has not been set"
+			exit 1
+		fi
+
 		if [ -z "$2" ]; then
 			echo "No repository url provided -r {url}"
 			exit 1
 		fi
+
 		REPO_URL=$2
-		if [[ $REPO_URL =~ \/([^\/]+)(\.git)?$ ]]; then
-			REPO="${BASH_REMATCH[1]}"
-			if [[ -z $T_REPOS_DIR ]]; then
-				echo "T_REPOS_DIR has not been set"
-				exit 1
-			fi
-			cd $T_REPOS_DIR
-			git clone --recursive $REPO_URL
-			RESULT="$T_REPOS_DIR/$REPO"
+		cd $T_REPOS_DIR
+
+		if git clone --recursive $REPO_URL; then
+    	RESULT="$T_REPOS_DIR/$(basename "$_" .git)"
 		else
-			echo "Invalid GitHub repository URL"
-			exit 1
+			exit $? # exit code from last command
 		fi
 
 	else # not -r or --repo
