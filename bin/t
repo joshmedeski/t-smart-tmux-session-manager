@@ -145,7 +145,7 @@ if [ $# -ge 1 ]; then # argument provided
 		cd $T_REPOS_DIR
 
 		if git clone --recursive $REPO_URL; then
-    	RESULT="$T_REPOS_DIR/$(basename "$_" .git)"
+			RESULT="$T_REPOS_DIR/$(basename "$_" .git)"
 		else
 			exit $? # exit code from last command
 		fi
