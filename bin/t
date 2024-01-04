@@ -136,7 +136,7 @@ if [ $# -ge 1 ]; then # argument provided
 			exit 1
 		fi
 		REPO_URL=$2
-		if [[ $REPO_URL =~ \/([^\/]+)\.git$ ]]; then
+		if [[ $REPO_URL =~ \/([^\/]+)\(.git)?$ ]]; then
 			REPO="${BASH_REMATCH[1]}"
 			if [[ -z $T_REPOS_DIR ]]; then
 				echo "T_REPOS_DIR has not been set"
