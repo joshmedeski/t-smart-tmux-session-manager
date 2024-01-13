@@ -6,8 +6,7 @@
 
 # t - the smart tmux session manager
 
-tmux is a powerful tool, but dealing with sessions can be painful. This script
-makes it easy to create and switch tmux sessions:
+tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create and switch tmux sessions:
 
 ## Prerequisites
 
@@ -18,7 +17,7 @@ makes it easy to create and switch tmux sessions:
 
 _Note: some users have had issues with fzf integration on tmux 3.2a where upon
 spawning fzf it would lock the tmux pane. Upgrading to 3.3a seems to be a viable
-workaround_ Check #104
+workaround_ Check [#104](https://github.com/joshmedeski/t-smart-tmux-session-manager/issues/104)
 
 ```sh
 brew install tmux zoxide fzf
@@ -36,15 +35,13 @@ Add the following line to your `tmux.conf` file:
 set -g @plugin 'joshmedeski/t-smart-tmux-session-manager'
 ```
 
-**Note:** tpm recommends you list your plugins and then run tpm at the very
-bottom of your `tmux.conf`.
+**Note:** tpm recommends you list your plugins and then run tpm at the very bottom of your `tmux.conf`.
 
 Then, run `<prefix>I` to install the plugin.
 
 ### 2. Add to path
 
-To use the `t` script from anywhere, select your shell environment and follow
-the instructions.
+To use the `t` script from anywhere, select your shell environment and follow the instructions.
 
 **Note:** you'll need to check the path of your tpm plugins. It may be `~/.tmux/plugins` or `~/.config/tmux/plugins` depending on where your `tmux.conf` is located.
 
@@ -92,8 +89,7 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 ### 3. Recommended tmux settings
 
-I recommend you add these settings to your `tmux.conf` to have a better
-experience with this plugin.
+I recommend you add these settings to your `tmux.conf` to have a better experience with this plugin.
 
 ```sh
 bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
@@ -102,8 +98,7 @@ set -g detach-on-destroy off  # don't exit from tmux when closing a session
 
 ### 4. Customize Prompt (optional)
 
-If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you
-can customize your prompt.
+If your terminal supports [Nerd Font symbols](https://www.nerdfonts.com/), you can customize your prompt.
 
 ```sh
 set -g @t-fzf-prompt '  '
@@ -134,13 +129,9 @@ Or you can replace the prompt with anything you'd like.
       t --help
 ```
 
-By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux
-popup that display zoxide results. Type the result you want and when you hit
-enter it will create a tmux session and connect to it or, if the sessions
-already exists, switch to it.
+By default, this plugin is bound to `<prefix>+T` which triggers a fzf-tmux popup that display zoxide results. Type the result you want and when you hit enter it will create a tmux session and connect to it or, if the sessions already exists, switch to it.
 
-If you are not in tmux, you can simply run `t` to start the interactive script,
-or call `t {name}` to jump directly to a session of your choosing.
+If you are not in tmux, you can simply run `t` to start the interactive script, or call `t {name}` to jump directly to a session of your choosing.
 
 ### Key Bindings
 
@@ -152,11 +143,9 @@ or call `t {name}` to jump directly to a session of your choosing.
 
 ### Cloning repositories
 
-You can quickly clone a repository to your preferred directory by using the `t`
-command combined with the `-r` flag (or `--repo`).
+You can quickly clone a repository to your preferred directory by using the `t` command combined with the `-r` flag (or `--repo`).
 
-First, you have to set the `T_REPOS_DIR` variable in your shell environment.
-Make sure to set it where you want your repositories cloned.
+First, you have to set the `T_REPOS_DIR` variable in your shell environment. Make sure to set it where you want your repositories cloned.
 
 <details>
 <summary>bash</summary>
@@ -199,8 +188,7 @@ t -r https://github.com/joshmedeski/t-smart-tmux-session-manager.git
 
 **Note:** it has to be a valid git remote url (ending in `.git`) or order to work.
 
-I prefer to copy the repository URL to my clipboard and run the following
-command on macOS.
+I prefer to copy the repository URL to my clipboard and run the following command on macOS.
 
 <details>
 <summary>bash/zsh</summary>
@@ -220,8 +208,7 @@ t -r (pbpaste)
 
 </details>
 
-If you want to overwrite the directory to clone to, you can overwrite the
-`T_REPOS_DIR` variable before running the command:
+If you want to overwrite the directory to clone to, you can overwrite the `T_REPOS_DIR` variable before running the command:
 
 ```sh
 T_REPOS_DIR=~/code t --repo https://github.com/joshmedeski/tmux-list.git
@@ -231,10 +218,7 @@ T_REPOS_DIR=~/code t --repo https://github.com/joshmedeski/tmux-list.git
 
 ### Use Git Root for session name
 
-You may prefer your session names starting from the root of the git repository.
-This can help with naming conflicts if you have multiple directories with the
-same name on your machine and make it clear when you have multiple sessions
-open in the same git repository.
+You may prefer your session names starting from the root of the git repository. This can help with naming conflicts if you have multiple directories with the same name on your machine and make it clear when you have multiple sessions open in the same git repository.
 
 <details>
 <summary>bash</summary>
@@ -308,8 +292,7 @@ set -Ux T_SESSION_NAME_INCLUDE_PARENT true
 
 ### Custom fzf-tmux keybinding
 
-By default, the `t` popup is bound to `<prefix>T`. In order to overwrite your
-own custom key binding, add setting the `@t-bind` varaible to your `tmux.conf`:
+By default, the `t` popup is bound to `<prefix>T`. In order to overwrite your own custom key binding, add setting the `@t-bind` varaible to your `tmux.conf`:
 
 ```sh
 set -g @t-bind "K"
@@ -323,8 +306,7 @@ set -g @t-bind "none" # unbind default
 
 ### Change default fzf results
 
-By default, t will display tmux sessions and zoxide results by default. You can
-change this by setting `@t-fzf-default-results` variable to your `tmux.conf`:
+By default, t will display tmux sessions and zoxide results by default. You can change this by setting `@t-fzf-default-results` variable to your `tmux.conf`:
 
 ```sh
 set -g @t-fzf-default-results 'sessions' # show tmux sessions by default
@@ -336,8 +318,7 @@ set -g @t-fzf-default-results 'zoxide' # show zoxide results by default
 
 ### Custom find command
 
-By default, the find key binding (`^f`) will run a simple `find` command to
-search for directories in and around your home directory.
+By default, the find key binding (`^f`) will run a simple `find` command to search for directories in and around your home directory.
 
 ```sh
 find ~ -maxdepth 3 -type d
@@ -345,10 +326,7 @@ find ~ -maxdepth 3 -type d
 
 You can customize this command by setting `@t-find-binding` variable to your `tmux.conf`:
 
-In this example, I'm setting the prompt with a custom [Nerd Font
-icon](https://www.nerdfonts.com/) and using [fd](https://github.com/sharkdp/fd)
-to search directories (including hidden ones) up to two levels deep from my
-home directory.
+In this example, I'm setting the prompt with a custom [Nerd Font icon](https://www.nerdfonts.com/) and using [fd](https://github.com/sharkdp/fd) to search directories (including hidden ones) up to two levels deep from my home directory.
 
 ```sh
 set -g @t-fzf-find-binding 'ctrl-f:change-prompt(  )+reload(fd -H -d 2 -t d . ~)'
@@ -358,8 +336,7 @@ Run `man fzf` to learn more about how to customize key bindings with fzf.
 
 ### FZF_TMUX_OPTS
 
-If you want to overwrite the fzf-tmux options, you can set the `FZF_TMUX_OPTS`
-variable in your shell environment.
+If you want to overwrite the fzf-tmux options, you can set the `FZF_TMUX_OPTS` variable in your shell environment.
 
 ```bash
 # ~/.bashrc or ~/.zshrc
@@ -375,8 +352,7 @@ Run `man fzf-tmux` to learn more about the available options.
 
 ### Custom Border Label
 
-If you want to customize the fzf popup border label, you can add
-`T_FZF_BORDER_LABEL` to your shell variable
+If you want to customize the fzf popup border label, you can add `T_FZF_BORDER_LABEL` to your shell variable
 
 ```bash
 # ~/.bashrc or ~/.zshrc
@@ -392,36 +368,29 @@ set -Ux T_FZF_BORDER_LABEL " Your Custom Label "
 
 ## Background
 
-Interested in learning more about how this script came to be? Check out [Smart
-tmux sessions with zoxide and
-fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
+Interested in learning more about how this script came to be? Check out [Smart tmux sessions with zoxide and fzf](https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/).
+]
 
 ## Startup script
 
-You can run a startup script when you create a new session. This is useful for
-running a command when you create a new session, like starting a dev server or
-automatically opening neovim to begin editing a file.
+You can run a startup script when you create a new session. This is useful for running a command when you create a new session, like starting a dev server or automatically opening neovim to begin editing a file.
 
-This works by adding a `.t` file to your desired directory. Here is a quick
-script for bootstrapping that file:
+This works by adding a `.t` file to your desired directory. Here is a quick script for bootstrapping that file:
 
 ```sh
 touch .t && chmod +x .t && echo -e '#!/usr/bin/env bash\n' > .t && nvim .t
 ```
 
-I like opening Neovim and the find file Telescope prompt to quickly find a file
-to edit. Here is an example of what I put in many of my projects:
+I like opening Neovim and the find file Telescope prompt to quickly find a file to edit. Here is an example of what I put in many of my projects:
 
 ```sh
 #!/usr/bin/env bash
 nvim -c 'Telescope find_files'
 ```
 
-So, when you open any project that detects a `.t` it will automatically run
-that script when a session is created.
+So, when you open any project that detects a `.t` it will automatically run that script when a session is created.
 
-This feature is in early development so please feel free to give feedback if
-you have ideas for how to improve on it.
+This feature is in early development so please feel free to give feedback if you have ideas for how to improve on it.
 
 ## Bonus: macOS keyboard shortcut
 
@@ -462,7 +431,4 @@ Add the following line to your `wezterm.lua` inside the **keys** options
 
 </details>
 
-**Note:** These bindings are based off the default prefix, `ctrl+b` (which
-converts to `\x02`). If you changed your prefix, I recommend [watching my
-video](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/)
-which goes into depth how to customize your own keybindings in Alacritty.
+**Note:** These bindings are based off the default prefix, `ctrl+b` (which converts to `\x02`). If you changed your prefix, I recommend [watching my video](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/) which goes into depth how to customize your own keybindings in Alacritty.
