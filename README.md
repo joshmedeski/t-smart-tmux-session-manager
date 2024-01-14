@@ -15,7 +15,11 @@ tmux is a powerful tool, but dealing with sessions can be painful. This script m
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf) (>=0.35.0)
 
-```
+_Note: some users have had issues with fzf integration on tmux 3.2a where upon
+spawning fzf it would lock the tmux pane. Upgrading to 3.3a seems to be a viable
+workaround_ Check [#104](https://github.com/joshmedeski/t-smart-tmux-session-manager/issues/104)
+
+```sh
 brew install tmux zoxide fzf
 ```
 
