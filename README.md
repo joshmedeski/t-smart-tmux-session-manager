@@ -1,8 +1,4 @@
-<a href="https://www.joshmedeski.com/posts/smart-tmux-sessions-with-zoxide-and-fzf/" target="_blank">
-
-![thumbnail](https://github.com/joshmedeski/t-smart-tmux-session-manager/blob/main/smart-tmux-sessions-with-zoxide-and-fzf.jpeg?raw=true)
-
-</a>
+**Annoucement 🎉📣** I've rewriten this project in Go and called it "sesh", go [check it out!](https://github.com/joshmedeski/sesh)
 
 # t - the smart tmux session manager
 
