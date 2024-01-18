@@ -1,8 +1,15 @@
-**Annoucement 🎉📣** I've rewriten this project in Go and called it "sesh", go [check it out!](https://github.com/joshmedeski/sesh)
+# Introducing Sesh 🎉
+
+I've rewritten this project in Go and called it "sesh", . It's more flexible and faster than the original script. I'm no longer maintaining this project. I'll leave it up for historical purposes, but I recommend you check out the new project.
+
+[Check out sesh](https://github.com/joshmedeski/sesh)
 
 # t - the smart tmux session manager
 
 tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create and switch tmux sessions:
+
+<details>
+<summary>docs</summary>
 
 ## Prerequisites
 
@@ -428,3 +435,5 @@ Add the following line to your `wezterm.lua` inside the **keys** options
 </details>
 
 **Note:** These bindings are based off the default prefix, `ctrl+b` (which converts to `\x02`). If you changed your prefix, I recommend [watching my video](https://www.joshmedeski.com/posts/macos-keyboard-shortcuts-for-tmux/) which goes into depth how to customize your own keybindings in Alacritty.
+
+</details>
