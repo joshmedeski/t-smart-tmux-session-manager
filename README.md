@@ -9,7 +9,7 @@ I've rewritten this project in Go and called it "sesh". It's more flexible and f
 tmux is a powerful tool, but dealing with sessions can be painful. This script makes it easy to create and switch tmux sessions:
 
 <details>
-<summary>docs</summary>
+<summary>Documentation</summary>
 
 ## Prerequisites
 
