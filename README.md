@@ -1,6 +1,6 @@
 # Introducing Sesh 🎉
 
-I've rewritten this project in Go and called it "sesh", . It's more flexible and faster than the original script. I'm no longer maintaining this project. I'll leave it up for historical purposes, but I recommend you check out the new project.
+I've rewritten this project in Go and called it "sesh". It's more flexible and faster than the original script. I'm no longer maintaining this project. I'll leave it up for historical purposes, but I recommend you check out the new project.
 
 [Check out sesh](https://github.com/joshmedeski/sesh)
 
